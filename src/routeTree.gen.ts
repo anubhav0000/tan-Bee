@@ -14,6 +14,8 @@ import { Route as AssignmentsRouteImport } from './routes/assignments'
 import { Route as AttendanceRouteImport } from './routes/attendance'
 import { Route as ExamsRouteImport } from './routes/exams'
 import { Route as ExpensesRouteImport } from './routes/expenses'
+import { Route as ProjectsRouteImport } from './routes/projects'
+import { Route as QrRouteImport } from './routes/qr'
 import { Route as SubjectsRouteImport } from './routes/subjects'
 import { Route as TimetableRouteImport } from './routes/timetable'
 
@@ -42,6 +44,16 @@ const ExpensesRoute = ExpensesRouteImport.update({
   path: '/expenses',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ProjectsRoute = ProjectsRouteImport.update({
+  id: '/projects',
+  path: '/projects',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const QrRoute = QrRouteImport.update({
+  id: '/qr',
+  path: '/qr',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SubjectsRoute = SubjectsRouteImport.update({
   id: '/subjects',
   path: '/subjects',
@@ -59,6 +71,8 @@ export interface FileRoutesByFullPath {
   '/attendance': typeof AttendanceRoute
   '/exams': typeof ExamsRoute
   '/expenses': typeof ExpensesRoute
+  '/projects': typeof ProjectsRoute
+  '/qr': typeof QrRoute
   '/subjects': typeof SubjectsRoute
   '/timetable': typeof TimetableRoute
 }
@@ -68,6 +82,8 @@ export interface FileRoutesByTo {
   '/attendance': typeof AttendanceRoute
   '/exams': typeof ExamsRoute
   '/expenses': typeof ExpensesRoute
+  '/projects': typeof ProjectsRoute
+  '/qr': typeof QrRoute
   '/subjects': typeof SubjectsRoute
   '/timetable': typeof TimetableRoute
 }
@@ -78,6 +94,8 @@ export interface FileRoutesById {
   '/attendance': typeof AttendanceRoute
   '/exams': typeof ExamsRoute
   '/expenses': typeof ExpensesRoute
+  '/projects': typeof ProjectsRoute
+  '/qr': typeof QrRoute
   '/subjects': typeof SubjectsRoute
   '/timetable': typeof TimetableRoute
 }
@@ -89,6 +107,8 @@ export interface FileRouteTypes {
     | '/attendance'
     | '/exams'
     | '/expenses'
+    | '/projects'
+    | '/qr'
     | '/subjects'
     | '/timetable'
   fileRoutesByTo: FileRoutesByTo
@@ -98,6 +118,8 @@ export interface FileRouteTypes {
     | '/attendance'
     | '/exams'
     | '/expenses'
+    | '/projects'
+    | '/qr'
     | '/subjects'
     | '/timetable'
   id:
@@ -107,6 +129,8 @@ export interface FileRouteTypes {
     | '/attendance'
     | '/exams'
     | '/expenses'
+    | '/projects'
+    | '/qr'
     | '/subjects'
     | '/timetable'
   fileRoutesById: FileRoutesById
@@ -117,6 +141,8 @@ export interface RootRouteChildren {
   AttendanceRoute: typeof AttendanceRoute
   ExamsRoute: typeof ExamsRoute
   ExpensesRoute: typeof ExpensesRoute
+  ProjectsRoute: typeof ProjectsRoute
+  QrRoute: typeof QrRoute
   SubjectsRoute: typeof SubjectsRoute
   TimetableRoute: typeof TimetableRoute
 }
@@ -158,6 +184,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ExpensesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/projects': {
+      id: '/projects'
+      path: '/projects'
+      fullPath: '/projects'
+      preLoaderRoute: typeof ProjectsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/qr': {
+      id: '/qr'
+      path: '/qr'
+      fullPath: '/qr'
+      preLoaderRoute: typeof QrRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/subjects': {
       id: '/subjects'
       path: '/subjects'
@@ -181,6 +221,8 @@ const rootRouteChildren: RootRouteChildren = {
   AttendanceRoute: AttendanceRoute,
   ExamsRoute: ExamsRoute,
   ExpensesRoute: ExpensesRoute,
+  ProjectsRoute: ProjectsRoute,
+  QrRoute: QrRoute,
   SubjectsRoute: SubjectsRoute,
   TimetableRoute: TimetableRoute,
 }
