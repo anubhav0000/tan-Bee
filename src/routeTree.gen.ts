@@ -10,33 +10,141 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AssignmentsRouteImport } from './routes/assignments'
+import { Route as AttendanceRouteImport } from './routes/attendance'
+import { Route as ExamsRouteImport } from './routes/exams'
+import { Route as ExpensesRouteImport } from './routes/expenses'
+import { Route as ProjectsRouteImport } from './routes/projects'
+import { Route as QrRouteImport } from './routes/qr'
+import { Route as SubjectsRouteImport } from './routes/subjects'
+import { Route as TimetableRouteImport } from './routes/timetable'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AssignmentsRoute = AssignmentsRouteImport.update({
+  id: '/assignments',
+  path: '/assignments',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AttendanceRoute = AttendanceRouteImport.update({
+  id: '/attendance',
+  path: '/attendance',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExamsRoute = ExamsRouteImport.update({
+  id: '/exams',
+  path: '/exams',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExpensesRoute = ExpensesRouteImport.update({
+  id: '/expenses',
+  path: '/expenses',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProjectsRoute = ProjectsRouteImport.update({
+  id: '/projects',
+  path: '/projects',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const QrRoute = QrRouteImport.update({
+  id: '/qr',
+  path: '/qr',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SubjectsRoute = SubjectsRouteImport.update({
+  id: '/subjects',
+  path: '/subjects',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TimetableRoute = TimetableRouteImport.update({
+  id: '/timetable',
+  path: '/timetable',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/assignments': typeof AssignmentsRoute
+  '/attendance': typeof AttendanceRoute
+  '/exams': typeof ExamsRoute
+  '/expenses': typeof ExpensesRoute
+  '/projects': typeof ProjectsRoute
+  '/qr': typeof QrRoute
+  '/subjects': typeof SubjectsRoute
+  '/timetable': typeof TimetableRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/assignments': typeof AssignmentsRoute
+  '/attendance': typeof AttendanceRoute
+  '/exams': typeof ExamsRoute
+  '/expenses': typeof ExpensesRoute
+  '/projects': typeof ProjectsRoute
+  '/qr': typeof QrRoute
+  '/subjects': typeof SubjectsRoute
+  '/timetable': typeof TimetableRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/assignments': typeof AssignmentsRoute
+  '/attendance': typeof AttendanceRoute
+  '/exams': typeof ExamsRoute
+  '/expenses': typeof ExpensesRoute
+  '/projects': typeof ProjectsRoute
+  '/qr': typeof QrRoute
+  '/subjects': typeof SubjectsRoute
+  '/timetable': typeof TimetableRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/assignments'
+    | '/attendance'
+    | '/exams'
+    | '/expenses'
+    | '/projects'
+    | '/qr'
+    | '/subjects'
+    | '/timetable'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/assignments'
+    | '/attendance'
+    | '/exams'
+    | '/expenses'
+    | '/projects'
+    | '/qr'
+    | '/subjects'
+    | '/timetable'
+  id:
+    | '__root__'
+    | '/'
+    | '/assignments'
+    | '/attendance'
+    | '/exams'
+    | '/expenses'
+    | '/projects'
+    | '/qr'
+    | '/subjects'
+    | '/timetable'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AssignmentsRoute: typeof AssignmentsRoute
+  AttendanceRoute: typeof AttendanceRoute
+  ExamsRoute: typeof ExamsRoute
+  ExpensesRoute: typeof ExpensesRoute
+  ProjectsRoute: typeof ProjectsRoute
+  QrRoute: typeof QrRoute
+  SubjectsRoute: typeof SubjectsRoute
+  TimetableRoute: typeof TimetableRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +156,75 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/assignments': {
+      id: '/assignments'
+      path: '/assignments'
+      fullPath: '/assignments'
+      preLoaderRoute: typeof AssignmentsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/attendance': {
+      id: '/attendance'
+      path: '/attendance'
+      fullPath: '/attendance'
+      preLoaderRoute: typeof AttendanceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/exams': {
+      id: '/exams'
+      path: '/exams'
+      fullPath: '/exams'
+      preLoaderRoute: typeof ExamsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/expenses': {
+      id: '/expenses'
+      path: '/expenses'
+      fullPath: '/expenses'
+      preLoaderRoute: typeof ExpensesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/projects': {
+      id: '/projects'
+      path: '/projects'
+      fullPath: '/projects'
+      preLoaderRoute: typeof ProjectsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/qr': {
+      id: '/qr'
+      path: '/qr'
+      fullPath: '/qr'
+      preLoaderRoute: typeof QrRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/subjects': {
+      id: '/subjects'
+      path: '/subjects'
+      fullPath: '/subjects'
+      preLoaderRoute: typeof SubjectsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/timetable': {
+      id: '/timetable'
+      path: '/timetable'
+      fullPath: '/timetable'
+      preLoaderRoute: typeof TimetableRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AssignmentsRoute: AssignmentsRoute,
+  AttendanceRoute: AttendanceRoute,
+  ExamsRoute: ExamsRoute,
+  ExpensesRoute: ExpensesRoute,
+  ProjectsRoute: ProjectsRoute,
+  QrRoute: QrRoute,
+  SubjectsRoute: SubjectsRoute,
+  TimetableRoute: TimetableRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
