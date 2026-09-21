@@ -29,7 +29,7 @@ const CAT_COLORS: Record<string, string> = {
 function ExpensesPage() {
   const [expenses, setExpenses] = useLocalStorage<Expense[]>("sh_expenses", SEED_EXPENSES);
   const [label, setLabel] = useState("");
-  const [category, setCategory] = useState(CATEGORIES[0]);
+  const [category, setCategory] = useState<string>("Books");
   const [amount, setAmount] = useState("");
 
   const monthKey = new Date().toISOString().slice(0, 7);

@@ -11,6 +11,9 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AssignmentsRouteImport } from './routes/assignments'
+import { Route as AttendanceRouteImport } from './routes/attendance'
+import { Route as ExamsRouteImport } from './routes/exams'
+import { Route as ExpensesRouteImport } from './routes/expenses'
 import { Route as SubjectsRouteImport } from './routes/subjects'
 import { Route as TimetableRouteImport } from './routes/timetable'
 
@@ -22,6 +25,21 @@ const IndexRoute = IndexRouteImport.update({
 const AssignmentsRoute = AssignmentsRouteImport.update({
   id: '/assignments',
   path: '/assignments',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AttendanceRoute = AttendanceRouteImport.update({
+  id: '/attendance',
+  path: '/attendance',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExamsRoute = ExamsRouteImport.update({
+  id: '/exams',
+  path: '/exams',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExpensesRoute = ExpensesRouteImport.update({
+  id: '/expenses',
+  path: '/expenses',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SubjectsRoute = SubjectsRouteImport.update({
@@ -38,12 +56,18 @@ const TimetableRoute = TimetableRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/assignments': typeof AssignmentsRoute
+  '/attendance': typeof AttendanceRoute
+  '/exams': typeof ExamsRoute
+  '/expenses': typeof ExpensesRoute
   '/subjects': typeof SubjectsRoute
   '/timetable': typeof TimetableRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/assignments': typeof AssignmentsRoute
+  '/attendance': typeof AttendanceRoute
+  '/exams': typeof ExamsRoute
+  '/expenses': typeof ExpensesRoute
   '/subjects': typeof SubjectsRoute
   '/timetable': typeof TimetableRoute
 }
@@ -51,20 +75,48 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/assignments': typeof AssignmentsRoute
+  '/attendance': typeof AttendanceRoute
+  '/exams': typeof ExamsRoute
+  '/expenses': typeof ExpensesRoute
   '/subjects': typeof SubjectsRoute
   '/timetable': typeof TimetableRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/assignments' | '/subjects' | '/timetable'
+  fullPaths:
+    | '/'
+    | '/assignments'
+    | '/attendance'
+    | '/exams'
+    | '/expenses'
+    | '/subjects'
+    | '/timetable'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/assignments' | '/subjects' | '/timetable'
-  id: '__root__' | '/' | '/assignments' | '/subjects' | '/timetable'
+  to:
+    | '/'
+    | '/assignments'
+    | '/attendance'
+    | '/exams'
+    | '/expenses'
+    | '/subjects'
+    | '/timetable'
+  id:
+    | '__root__'
+    | '/'
+    | '/assignments'
+    | '/attendance'
+    | '/exams'
+    | '/expenses'
+    | '/subjects'
+    | '/timetable'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AssignmentsRoute: typeof AssignmentsRoute
+  AttendanceRoute: typeof AttendanceRoute
+  ExamsRoute: typeof ExamsRoute
+  ExpensesRoute: typeof ExpensesRoute
   SubjectsRoute: typeof SubjectsRoute
   TimetableRoute: typeof TimetableRoute
 }
@@ -83,6 +135,27 @@ declare module '@tanstack/react-router' {
       path: '/assignments'
       fullPath: '/assignments'
       preLoaderRoute: typeof AssignmentsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/attendance': {
+      id: '/attendance'
+      path: '/attendance'
+      fullPath: '/attendance'
+      preLoaderRoute: typeof AttendanceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/exams': {
+      id: '/exams'
+      path: '/exams'
+      fullPath: '/exams'
+      preLoaderRoute: typeof ExamsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/expenses': {
+      id: '/expenses'
+      path: '/expenses'
+      fullPath: '/expenses'
+      preLoaderRoute: typeof ExpensesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/subjects': {
@@ -105,6 +178,9 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AssignmentsRoute: AssignmentsRoute,
+  AttendanceRoute: AttendanceRoute,
+  ExamsRoute: ExamsRoute,
+  ExpensesRoute: ExpensesRoute,
   SubjectsRoute: SubjectsRoute,
   TimetableRoute: TimetableRoute,
 }
