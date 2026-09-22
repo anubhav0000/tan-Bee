@@ -131,7 +131,6 @@ function NameOnboarding({ children }: { children: ReactNode }) {
   const [tutorialDone, setTutorialDone] = useLocalStorage<boolean>("sh_tutorial_done", false);
   const [tutorialMode, setTutorialMode] = useLocalStorage<boolean>("sh_tutorial_mode", false);
   const [draftName, setDraftName] = useState("");
-  const [step, setStep] = useState(0); // 0: Name, 1: Account Type
   const hydrated = useHydrated();
 
   if (!hydrated) return null;
@@ -142,19 +141,11 @@ function NameOnboarding({ children }: { children: ReactNode }) {
   }
 
   // Handle users who have a name but haven't finished the tutorial (e.g. from previous version)
-  if (userName && !tutorialDone && step === 0) {
-    setStep(1);
-  }
-
-  const handleNewAccount = () => {
-    setTutorialMode(true);
+  if (userName && !tutorialDone) {
     setTutorialDone(true);
-  };
-
-  const handleExistingAccount = () => {
     setTutorialMode(false);
-    setTutorialDone(true);
-  };
+    return <>{children}</>;
+  }
 
   return (
     <div className="min-h-screen bg-panel flex flex-col items-center justify-center p-4 relative overflow-hidden">
@@ -162,69 +153,41 @@ function NameOnboarding({ children }: { children: ReactNode }) {
       <div className="absolute -bottom-20 -right-20 w-96 h-96 bg-coral/5 rounded-full blur-3xl pointer-events-none" />
       
       <div className="glass-card max-w-sm w-full p-8 flex flex-col items-center text-center animate-rise relative z-10 transition-all duration-300 min-h-[360px] justify-center">
-        
-        {step === 0 && (
-          <div className="w-full flex flex-col items-center animate-fade-in">
-            <div className="w-20 h-20 rounded-3xl bg-white/5 border border-white/10 flex items-center justify-center mb-6 shadow-xl">
-              <img src="/logo.png" alt="Tan bee" className="w-10 h-10 drop-shadow-md" />
-            </div>
-            <h1 className="font-display text-4xl text-ice mb-2">Welcome to Tan bee</h1>
-            <p className="text-sm text-ice/60 mb-8">What should we call you?</p>
-            
-            <form 
-              onSubmit={(e) => { 
-                e.preventDefault(); 
-                if (draftName.trim()) {
-                  setUserName(draftName.trim());
-                  setStep(1);
-                }
-              }}
-              className="w-full flex flex-col gap-3"
+        <div className="w-full flex flex-col items-center animate-fade-in">
+          <div className="w-20 h-20 rounded-3xl bg-white/5 border border-white/10 flex items-center justify-center mb-6 shadow-xl">
+            <img src="/logo.png" alt="Tan bee" className="w-10 h-10 drop-shadow-md" />
+          </div>
+          <h1 className="font-display text-4xl text-ice mb-2">Welcome to Tan bee</h1>
+          <p className="text-sm text-ice/60 mb-8">What should we call you?</p>
+          
+          <form 
+            onSubmit={(e) => { 
+              e.preventDefault(); 
+              if (draftName.trim()) {
+                setUserName(draftName.trim());
+                setTutorialMode(false);
+                setTutorialDone(true);
+              }
+            }}
+            className="w-full flex flex-col gap-3"
+          >
+            <input
+              type="text"
+              autoFocus
+              value={draftName}
+              onChange={(e) => setDraftName(e.target.value)}
+              placeholder="Your name"
+              className="w-full rounded-xl bg-white/5 border border-white/10 px-4 py-3 text-ice text-center placeholder:text-ice/30 outline-none focus:border-mint/50 transition-colors"
+            />
+            <button 
+              type="submit"
+              disabled={!draftName.trim()}
+              className="w-full rounded-xl bg-mint px-4 py-3 text-ink font-semibold disabled:opacity-50 disabled:cursor-not-allowed hover:bg-mint/90 transition-colors shadow-lg shadow-mint/10"
             >
-              <input
-                type="text"
-                autoFocus
-                value={draftName}
-                onChange={(e) => setDraftName(e.target.value)}
-                placeholder="Your name"
-                className="w-full rounded-xl bg-white/5 border border-white/10 px-4 py-3 text-ice text-center placeholder:text-ice/30 outline-none focus:border-mint/50 transition-colors"
-              />
-              <button 
-                type="submit"
-                disabled={!draftName.trim()}
-                className="w-full rounded-xl bg-mint px-4 py-3 text-ink font-semibold disabled:opacity-50 disabled:cursor-not-allowed hover:bg-mint/90 transition-colors shadow-lg shadow-mint/10"
-              >
-                Continue
-              </button>
-            </form>
-          </div>
-        )}
-
-        {step === 1 && (
-          <div className="w-full flex flex-col items-center animate-fade-in">
-            <h2 className="font-display text-3xl text-ice mb-3">One last thing...</h2>
-            <p className="text-sm text-ice/70 mb-10 px-2">
-              Have you used Tan bee before, or is this a brand new setup?
-            </p>
-            <div className="w-full flex flex-col gap-4 mt-auto">
-              <button 
-                onClick={handleNewAccount} 
-                className="w-full rounded-xl bg-mint px-4 py-4 text-ink font-semibold hover:bg-mint/90 transition-all shadow-lg shadow-mint/10 flex flex-col items-center gap-1"
-              >
-                <span className="text-lg">New Account</span>
-                <span className="text-xs opacity-70 font-normal">Show me how it works</span>
-              </button>
-              <button 
-                onClick={handleExistingAccount} 
-                className="w-full rounded-xl bg-white/5 border border-white/10 px-4 py-4 text-ice font-semibold hover:bg-white/10 transition-colors flex flex-col items-center gap-1"
-              >
-                <span className="text-lg">Existing Account</span>
-                <span className="text-xs opacity-50 font-normal">Skip tutorial, open the app</span>
-              </button>
-            </div>
-          </div>
-        )}
-
+              Continue
+            </button>
+          </form>
+        </div>
       </div>
     </div>
   );
