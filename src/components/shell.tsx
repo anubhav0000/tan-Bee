@@ -14,6 +14,11 @@ import {
   Menu,
   X,
   Info,
+  CalendarOff,
+  Timer,
+  FileText,
+  Sparkles,
+  Settings,
 } from "lucide-react";
 
 const NAV = [
@@ -23,15 +28,21 @@ const NAV = [
   { title: "Class Timetable", url: "/timetable", icon: CalendarDays, dot: "bg-sky/60" },
   { title: "Exam Reminders", url: "/exams", icon: AlarmClock, dot: "bg-viol/60" },
   { title: "Attendance", url: "/attendance", icon: BarChart3, dot: "bg-mint/50" },
+  { title: "Holidays", url: "/holidays", icon: CalendarOff, dot: "bg-coral/40" },
   { title: "Expenses", url: "/expenses", icon: Wallet, dot: "bg-ice/30" },
   { title: "Group Projects", url: "/projects", icon: Users, dot: "bg-sky/50" },
+  { title: "Study Notes", url: "/notes", icon: FileText, dot: "bg-mint/60", requiresStudyMode: true },
+  { title: "AI Study Buddy", url: "/ai-chat", icon: Sparkles, dot: "bg-viol/80", requiresStudyMode: true },
+  { title: "Stopwatch", url: "/stopwatch", icon: Timer, dot: "bg-rose/50", requiresStudyMode: true },
   { title: "QR Generator", url: "/qr", icon: QrCode, dot: "bg-coral/50" },
+  { title: "Settings", url: "/settings", icon: Settings, dot: "bg-ice/50" },
   { title: "About", url: "/about", icon: Info, dot: "bg-mint/80" },
 ] as const;
 
 function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
   const pathname = useRouterState({ select: (r) => r.location.pathname });
   const [tutorialMode, setTutorialMode] = useLocalStorage<boolean>("sh_tutorial_mode", false);
+  const [studyMode] = useLocalStorage<boolean>("sh_study_mode", true);
 
   return (
     <>
@@ -46,6 +57,8 @@ function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
       </div>
       <nav className="px-3 space-y-0.5 text-[13px] font-medium">
         {NAV.map((item) => {
+          if ((item as any).requiresStudyMode && !studyMode) return null;
+          
           const active = pathname === item.url;
           return (
             <Link

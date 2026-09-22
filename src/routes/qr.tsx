@@ -18,6 +18,7 @@ export const Route = createFileRoute("/qr")({
 function QrPage() {
   const [text, setText] = useState("https://");
   const [dataUrl, setDataUrl] = useState<string | null>(null);
+  const [watermarkedUrl, setWatermarkedUrl] = useState<string | null>(null);
 
   useEffect(() => {
     const value = text.trim();
@@ -32,10 +33,41 @@ function QrPage() {
       color: { dark: "#0e1526", light: "#3be8b0" },
     })
       .then((url) => {
-        if (!cancelled) setDataUrl(url);
+        if (cancelled) return;
+        setDataUrl(url);
+        
+        // Add Watermark
+        const img = new Image();
+        img.onload = () => {
+          if (cancelled) return;
+          const canvas = document.createElement("canvas");
+          canvas.width = 512;
+          canvas.height = 560; // Extra height for watermark
+          const ctx = canvas.getContext("2d");
+          if (!ctx) return;
+          
+          // Fill background
+          ctx.fillStyle = "#3be8b0";
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+          
+          // Draw QR code
+          ctx.drawImage(img, 0, 0);
+          
+          // Draw Watermark Text
+          ctx.fillStyle = "#0e1526";
+          ctx.font = "bold 24px sans-serif";
+          ctx.textAlign = "center";
+          ctx.fillText("Tan Bee", 256, 535);
+          
+          setWatermarkedUrl(canvas.toDataURL("image/png"));
+        };
+        img.src = url;
       })
       .catch(() => {
-        if (!cancelled) setDataUrl(null);
+        if (!cancelled) {
+          setDataUrl(null);
+          setWatermarkedUrl(null);
+        }
       });
     return () => {
       cancelled = true;
@@ -60,9 +92,9 @@ function QrPage() {
           <p className="mt-3 font-mono text-[10px] text-ice/40">
             Links, Wi-Fi credentials, notes — anything under ~500 characters.
           </p>
-          {dataUrl && (
+          {watermarkedUrl && (
             <a
-              href={dataUrl}
+              href={watermarkedUrl}
               download="tan-bee-qr.png"
               className="mt-4 inline-flex items-center gap-1.5 rounded-lg bg-mint px-4 py-2 text-sm font-semibold text-ink hover:bg-mint/90"
             >

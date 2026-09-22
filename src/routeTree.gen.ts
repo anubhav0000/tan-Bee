@@ -11,12 +11,17 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AboutRouteImport } from './routes/about'
+import { Route as AiChatRouteImport } from './routes/ai-chat'
 import { Route as AssignmentsRouteImport } from './routes/assignments'
 import { Route as AttendanceRouteImport } from './routes/attendance'
 import { Route as ExamsRouteImport } from './routes/exams'
 import { Route as ExpensesRouteImport } from './routes/expenses'
+import { Route as HolidaysRouteImport } from './routes/holidays'
+import { Route as NotesRouteImport } from './routes/notes'
 import { Route as ProjectsRouteImport } from './routes/projects'
 import { Route as QrRouteImport } from './routes/qr'
+import { Route as SettingsRouteImport } from './routes/settings'
+import { Route as StopwatchRouteImport } from './routes/stopwatch'
 import { Route as SubjectsRouteImport } from './routes/subjects'
 import { Route as TimetableRouteImport } from './routes/timetable'
 
@@ -28,6 +33,11 @@ const IndexRoute = IndexRouteImport.update({
 const AboutRoute = AboutRouteImport.update({
   id: '/about',
   path: '/about',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AiChatRoute = AiChatRouteImport.update({
+  id: '/ai-chat',
+  path: '/ai-chat',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AssignmentsRoute = AssignmentsRouteImport.update({
@@ -50,6 +60,16 @@ const ExpensesRoute = ExpensesRouteImport.update({
   path: '/expenses',
   getParentRoute: () => rootRouteImport,
 } as any)
+const HolidaysRoute = HolidaysRouteImport.update({
+  id: '/holidays',
+  path: '/holidays',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NotesRoute = NotesRouteImport.update({
+  id: '/notes',
+  path: '/notes',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ProjectsRoute = ProjectsRouteImport.update({
   id: '/projects',
   path: '/projects',
@@ -58,6 +78,16 @@ const ProjectsRoute = ProjectsRouteImport.update({
 const QrRoute = QrRouteImport.update({
   id: '/qr',
   path: '/qr',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SettingsRoute = SettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const StopwatchRoute = StopwatchRouteImport.update({
+  id: '/stopwatch',
+  path: '/stopwatch',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SubjectsRoute = SubjectsRouteImport.update({
@@ -74,24 +104,34 @@ const TimetableRoute = TimetableRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/ai-chat': typeof AiChatRoute
   '/assignments': typeof AssignmentsRoute
   '/attendance': typeof AttendanceRoute
   '/exams': typeof ExamsRoute
   '/expenses': typeof ExpensesRoute
+  '/holidays': typeof HolidaysRoute
+  '/notes': typeof NotesRoute
   '/projects': typeof ProjectsRoute
   '/qr': typeof QrRoute
+  '/settings': typeof SettingsRoute
+  '/stopwatch': typeof StopwatchRoute
   '/subjects': typeof SubjectsRoute
   '/timetable': typeof TimetableRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/ai-chat': typeof AiChatRoute
   '/assignments': typeof AssignmentsRoute
   '/attendance': typeof AttendanceRoute
   '/exams': typeof ExamsRoute
   '/expenses': typeof ExpensesRoute
+  '/holidays': typeof HolidaysRoute
+  '/notes': typeof NotesRoute
   '/projects': typeof ProjectsRoute
   '/qr': typeof QrRoute
+  '/settings': typeof SettingsRoute
+  '/stopwatch': typeof StopwatchRoute
   '/subjects': typeof SubjectsRoute
   '/timetable': typeof TimetableRoute
 }
@@ -99,12 +139,17 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/ai-chat': typeof AiChatRoute
   '/assignments': typeof AssignmentsRoute
   '/attendance': typeof AttendanceRoute
   '/exams': typeof ExamsRoute
   '/expenses': typeof ExpensesRoute
+  '/holidays': typeof HolidaysRoute
+  '/notes': typeof NotesRoute
   '/projects': typeof ProjectsRoute
   '/qr': typeof QrRoute
+  '/settings': typeof SettingsRoute
+  '/stopwatch': typeof StopwatchRoute
   '/subjects': typeof SubjectsRoute
   '/timetable': typeof TimetableRoute
 }
@@ -113,36 +158,51 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/about'
+    | '/ai-chat'
     | '/assignments'
     | '/attendance'
     | '/exams'
     | '/expenses'
+    | '/holidays'
+    | '/notes'
     | '/projects'
     | '/qr'
+    | '/settings'
+    | '/stopwatch'
     | '/subjects'
     | '/timetable'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/about'
+    | '/ai-chat'
     | '/assignments'
     | '/attendance'
     | '/exams'
     | '/expenses'
+    | '/holidays'
+    | '/notes'
     | '/projects'
     | '/qr'
+    | '/settings'
+    | '/stopwatch'
     | '/subjects'
     | '/timetable'
   id:
     | '__root__'
     | '/'
     | '/about'
+    | '/ai-chat'
     | '/assignments'
     | '/attendance'
     | '/exams'
     | '/expenses'
+    | '/holidays'
+    | '/notes'
     | '/projects'
     | '/qr'
+    | '/settings'
+    | '/stopwatch'
     | '/subjects'
     | '/timetable'
   fileRoutesById: FileRoutesById
@@ -150,12 +210,17 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
+  AiChatRoute: typeof AiChatRoute
   AssignmentsRoute: typeof AssignmentsRoute
   AttendanceRoute: typeof AttendanceRoute
   ExamsRoute: typeof ExamsRoute
   ExpensesRoute: typeof ExpensesRoute
+  HolidaysRoute: typeof HolidaysRoute
+  NotesRoute: typeof NotesRoute
   ProjectsRoute: typeof ProjectsRoute
   QrRoute: typeof QrRoute
+  SettingsRoute: typeof SettingsRoute
+  StopwatchRoute: typeof StopwatchRoute
   SubjectsRoute: typeof SubjectsRoute
   TimetableRoute: typeof TimetableRoute
 }
@@ -174,6 +239,13 @@ declare module '@tanstack/react-router' {
       path: '/about'
       fullPath: '/about'
       preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ai-chat': {
+      id: '/ai-chat'
+      path: '/ai-chat'
+      fullPath: '/ai-chat'
+      preLoaderRoute: typeof AiChatRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/assignments': {
@@ -204,6 +276,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ExpensesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/holidays': {
+      id: '/holidays'
+      path: '/holidays'
+      fullPath: '/holidays'
+      preLoaderRoute: typeof HolidaysRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/notes': {
+      id: '/notes'
+      path: '/notes'
+      fullPath: '/notes'
+      preLoaderRoute: typeof NotesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/projects': {
       id: '/projects'
       path: '/projects'
@@ -216,6 +302,20 @@ declare module '@tanstack/react-router' {
       path: '/qr'
       fullPath: '/qr'
       preLoaderRoute: typeof QrRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/stopwatch': {
+      id: '/stopwatch'
+      path: '/stopwatch'
+      fullPath: '/stopwatch'
+      preLoaderRoute: typeof StopwatchRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/subjects': {
@@ -238,12 +338,17 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
+  AiChatRoute: AiChatRoute,
   AssignmentsRoute: AssignmentsRoute,
   AttendanceRoute: AttendanceRoute,
   ExamsRoute: ExamsRoute,
   ExpensesRoute: ExpensesRoute,
+  HolidaysRoute: HolidaysRoute,
+  NotesRoute: NotesRoute,
   ProjectsRoute: ProjectsRoute,
   QrRoute: QrRoute,
+  SettingsRoute: SettingsRoute,
+  StopwatchRoute: StopwatchRoute,
   SubjectsRoute: SubjectsRoute,
   TimetableRoute: TimetableRoute,
 }

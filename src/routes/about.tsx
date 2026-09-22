@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Info } from "lucide-react";
+import { Info, Linkedin } from "lucide-react";
 
 export const Route = createFileRoute("/about")({
   head: () => ({
@@ -28,6 +28,15 @@ function AboutPage() {
             <div>
               <p className="font-mono text-[10px] text-ice/40 tracking-wider">CREATOR</p>
               <p className="text-xl font-display text-mint mt-1">Anubhav Sikder</p>
+              
+              <a 
+                href="https://www.linkedin.com/in/anubhav-sikder-633190421?utm_source=share_via&utm_content=profile&utm_medium=member_android"
+                target="_blank"
+                rel="noreferrer"
+                className="mt-4 inline-flex items-center gap-2 rounded-lg bg-[#0A66C2] px-4 py-2 text-sm font-semibold text-white hover:bg-[#004182] transition-colors"
+              >
+                <Linkedin className="size-4" /> Get in touch
+              </a>
             </div>
           </div>
         </div>

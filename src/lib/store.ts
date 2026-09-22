@@ -58,10 +58,9 @@ export interface Expense {
   label: string;
   category: string;
   amount: number;
-  date: string; // ISO date
+  date: string;
   paymentMethod?: "cash" | "upi";
 }
-
 export interface ClearEvent {
   id: string;
   amount: number;
@@ -80,6 +79,14 @@ export interface Project {
   name: string;
   members: string[];
   tasks: ProjectTask[];
+}
+
+export interface Note {
+  id: string;
+  subjectId: string;
+  topic: string;
+  date: string;
+  summary: string;
 }
 
 export function uid() {
