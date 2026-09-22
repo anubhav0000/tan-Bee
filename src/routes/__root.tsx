@@ -129,8 +129,9 @@ function RootShell({ children }: { children: ReactNode }) {
 function NameOnboarding({ children }: { children: ReactNode }) {
   const [userName, setUserName] = useLocalStorage<string>("sh_user_name", "");
   const [tutorialDone, setTutorialDone] = useLocalStorage<boolean>("sh_tutorial_done", false);
+  const [tutorialMode, setTutorialMode] = useLocalStorage<boolean>("sh_tutorial_mode", false);
   const [draftName, setDraftName] = useState("");
-  const [step, setStep] = useState(0); // 0: Name, 1-3: Tutorial
+  const [step, setStep] = useState(0); // 0: Name, 1: Account Type
   const hydrated = useHydrated();
 
   if (!hydrated) return null;
@@ -145,15 +146,13 @@ function NameOnboarding({ children }: { children: ReactNode }) {
     setStep(1);
   }
 
-  const handleNext = () => {
-    if (step < 3) {
-      setStep(s => s + 1);
-    } else {
-      setTutorialDone(true);
-    }
+  const handleNewAccount = () => {
+    setTutorialMode(true);
+    setTutorialDone(true);
   };
 
-  const handleSkip = () => {
+  const handleExistingAccount = () => {
+    setTutorialMode(false);
     setTutorialDone(true);
   };
 
@@ -203,42 +202,26 @@ function NameOnboarding({ children }: { children: ReactNode }) {
 
         {step === 1 && (
           <div className="w-full flex flex-col items-center animate-fade-in">
-            <div className="w-16 h-16 rounded-2xl bg-coral/10 border border-coral/20 flex items-center justify-center mb-6 text-coral font-display text-2xl">1</div>
-            <h2 className="font-display text-2xl text-ice mb-3">Track Your Life</h2>
-            <p className="text-sm text-ice/70 mb-10 leading-relaxed px-2">
-              Never miss a beat. Log your attendance, manage classes, and keep an eye on upcoming exams all in one place.
+            <h2 className="font-display text-3xl text-ice mb-3">One last thing...</h2>
+            <p className="text-sm text-ice/70 mb-10 px-2">
+              Have you used Tan bee before, or is this a brand new setup?
             </p>
-            <div className="w-full flex gap-3 mt-auto">
-              <button onClick={handleSkip} className="flex-1 py-3 text-ice/50 text-sm font-semibold hover:text-ice transition-colors">Skip</button>
-              <button onClick={handleNext} className="flex-1 rounded-xl bg-white/10 px-4 py-3 text-ice font-semibold hover:bg-white/20 transition-colors">Next</button>
+            <div className="w-full flex flex-col gap-4 mt-auto">
+              <button 
+                onClick={handleNewAccount} 
+                className="w-full rounded-xl bg-mint px-4 py-4 text-ink font-semibold hover:bg-mint/90 transition-all shadow-lg shadow-mint/10 flex flex-col items-center gap-1"
+              >
+                <span className="text-lg">New Account</span>
+                <span className="text-xs opacity-70 font-normal">Show me how it works</span>
+              </button>
+              <button 
+                onClick={handleExistingAccount} 
+                className="w-full rounded-xl bg-white/5 border border-white/10 px-4 py-4 text-ice font-semibold hover:bg-white/10 transition-colors flex flex-col items-center gap-1"
+              >
+                <span className="text-lg">Existing Account</span>
+                <span className="text-xs opacity-50 font-normal">Skip tutorial, open the app</span>
+              </button>
             </div>
-          </div>
-        )}
-
-        {step === 2 && (
-          <div className="w-full flex flex-col items-center animate-fade-in">
-            <div className="w-16 h-16 rounded-2xl bg-mint/10 border border-mint/20 flex items-center justify-center mb-6 text-mint font-display text-2xl">2</div>
-            <h2 className="font-display text-2xl text-ice mb-3">Money & Projects</h2>
-            <p className="text-sm text-ice/70 mb-10 leading-relaxed px-2">
-              Track your daily expenses, monitor group project contributions, and easily manage your budget.
-            </p>
-            <div className="w-full flex gap-3 mt-auto">
-              <button onClick={handleSkip} className="flex-1 py-3 text-ice/50 text-sm font-semibold hover:text-ice transition-colors">Skip</button>
-              <button onClick={handleNext} className="flex-1 rounded-xl bg-white/10 px-4 py-3 text-ice font-semibold hover:bg-white/20 transition-colors">Next</button>
-            </div>
-          </div>
-        )}
-
-        {step === 3 && (
-          <div className="w-full flex flex-col items-center animate-fade-in">
-            <div className="w-16 h-16 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center mb-6 text-ice font-display text-2xl">3</div>
-            <h2 className="font-display text-2xl text-ice mb-3">100% Private</h2>
-            <p className="text-sm text-ice/70 mb-10 leading-relaxed px-2">
-              Your data belongs to you. Everything is stored locally on this device. No servers, no tracking.
-            </p>
-            <button onClick={handleNext} className="w-full rounded-xl bg-mint px-4 py-3 text-ink font-semibold hover:bg-mint/90 transition-colors shadow-lg shadow-mint/10 mt-auto">
-              Let's Go
-            </button>
           </div>
         )}
 

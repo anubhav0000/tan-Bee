@@ -27,6 +27,7 @@ const COLORS: SubjectColor[] = SUBJECT_COLORS;
 
 function SubjectsPage() {
   const [subjects, setSubjects] = useLocalStorage<Subject[]>("sh_subjects", SEED_SUBJECTS);
+  const [tutorialMode] = useLocalStorage<boolean>("sh_tutorial_mode", false);
   const [name, setName] = useState("");
   const [code, setCode] = useState("");
   const [color, setColor] = useState<SubjectColor>("sky");
@@ -114,7 +115,23 @@ function SubjectsPage() {
             )}
           </div>
         ))}
-        {subjects.length === 0 && <p className="text-sm text-ice/40 py-6 text-center">No subjects yet — add one above.</p>}
+        {subjects.length === 0 && (
+          tutorialMode ? (
+            <div className="py-12 text-center animate-fade-in">
+              <div className="inline-flex flex-col items-center gap-3 bg-mint/10 border border-mint/20 p-6 rounded-2xl relative shadow-lg shadow-mint/5">
+                <div className="absolute -top-4 animate-bounce bg-mint text-ink rounded-full size-8 flex items-center justify-center font-bold text-lg shadow-md">
+                  ↑
+                </div>
+                <p className="text-mint font-semibold mt-2">Create your first subject</p>
+                <p className="text-xs text-mint/70 max-w-[250px] leading-relaxed">
+                  Type a name like "Computer Science" and click Add. You need at least one subject to track attendance and assignments!
+                </p>
+              </div>
+            </div>
+          ) : (
+            <p className="text-sm text-ice/40 py-6 text-center">No subjects yet — add one above.</p>
+          )
+        )}
       </div>
     </div>
   );

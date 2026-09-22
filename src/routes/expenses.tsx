@@ -28,6 +28,7 @@ const CAT_COLORS: Record<string, string> = {
 
 function ExpensesPage() {
   const [expenses, setExpenses] = useLocalStorage<Expense[]>("sh_expenses", SEED_EXPENSES);
+  const [tutorialMode] = useLocalStorage<boolean>("sh_tutorial_mode", false);
   const [parentTracking, setParentTracking] = useLocalStorage("sh_parent_tracking", false);
   const [upiClears, setUpiClears] = useLocalStorage<ClearEvent[]>("sh_upi_clears", []);
   
@@ -268,7 +269,23 @@ function ExpensesPage() {
               )}
             </div>
           ))}
-        {expenses.length === 0 && <p className="text-sm text-ice/40 py-6 text-center">No expenses logged yet.</p>}
+        {expenses.length === 0 && (
+          tutorialMode ? (
+            <div className="py-12 text-center animate-fade-in">
+              <div className="inline-flex flex-col items-center gap-3 bg-mint/10 border border-mint/20 p-6 rounded-2xl relative shadow-lg shadow-mint/5">
+                <div className="absolute -top-4 animate-bounce bg-mint text-ink rounded-full size-8 flex items-center justify-center font-bold text-lg shadow-md">
+                  ↑
+                </div>
+                <p className="text-mint font-semibold mt-2">Log your first expense</p>
+                <p className="text-xs text-mint/70 max-w-[250px] leading-relaxed">
+                  Spent money on food or books today? Log it here to keep your daily budget on track!
+                </p>
+              </div>
+            </div>
+          ) : (
+            <p className="text-sm text-ice/40 py-6 text-center">No expenses logged yet.</p>
+          )
+        )}
       </div>
     </div>
   );

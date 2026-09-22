@@ -26,6 +26,7 @@ export const Route = createFileRoute("/assignments")({
 function AssignmentsPage() {
   const [subjects] = useLocalStorage<Subject[]>("sh_subjects", SEED_SUBJECTS);
   const [assignments, setAssignments] = useLocalStorage<Assignment[]>("sh_assignments", SEED_ASSIGNMENTS);
+  const [tutorialMode] = useLocalStorage<boolean>("sh_tutorial_mode", false);
   const [title, setTitle] = useState("");
   const [subjectId, setSubjectId] = useState(subjects[0]?.id ?? "");
   const [due, setDue] = useState("");
@@ -137,7 +138,23 @@ function AssignmentsPage() {
             </div>
           );
         })}
-        {assignments.length === 0 && <p className="text-sm text-ice/40 py-6 text-center">No assignments yet.</p>}
+        {assignments.length === 0 && (
+          tutorialMode ? (
+            <div className="py-12 text-center animate-fade-in">
+              <div className="inline-flex flex-col items-center gap-3 bg-mint/10 border border-mint/20 p-6 rounded-2xl relative shadow-lg shadow-mint/5">
+                <div className="absolute -top-4 animate-bounce bg-mint text-ink rounded-full size-8 flex items-center justify-center font-bold text-lg shadow-md">
+                  ↑
+                </div>
+                <p className="text-mint font-semibold mt-2">Add your first assignment</p>
+                <p className="text-xs text-mint/70 max-w-[250px] leading-relaxed">
+                  Got homework or a project due? Fill out the details above and hit Add.
+                </p>
+              </div>
+            </div>
+          ) : (
+            <p className="text-sm text-ice/40 py-6 text-center">No assignments yet.</p>
+          )
+        )}
       </div>
     </div>
   );

@@ -19,6 +19,7 @@ const MEMBER_COLORS = ["bg-sky", "bg-coral", "bg-mint", "bg-viol"];
 
 function ProjectsPage() {
   const [projects, setProjects] = useLocalStorage<Project[]>("sh_projects", SEED_PROJECTS);
+  const [tutorialMode] = useLocalStorage<boolean>("sh_tutorial_mode", false);
   const [name, setName] = useState("");
   const [taskDraft, setTaskDraft] = useState<Record<string, string>>({});
   const [memberDraft, setMemberDraft] = useState<Record<string, string>>({});
@@ -191,7 +192,23 @@ function ProjectsPage() {
             </div>
           );
         })}
-        {projects.length === 0 && <p className="text-sm text-ice/40 py-6 text-center">No projects yet — create one above.</p>}
+        {projects.length === 0 && (
+          tutorialMode ? (
+            <div className="py-12 text-center animate-fade-in">
+              <div className="inline-flex flex-col items-center gap-3 bg-mint/10 border border-mint/20 p-6 rounded-2xl relative shadow-lg shadow-mint/5">
+                <div className="absolute -top-4 animate-bounce bg-mint text-ink rounded-full size-8 flex items-center justify-center font-bold text-lg shadow-md">
+                  ↑
+                </div>
+                <p className="text-mint font-semibold mt-2">Start a Group Project</p>
+                <p className="text-xs text-mint/70 max-w-[250px] leading-relaxed">
+                  Working with friends? Create a project above to add members and track tasks together.
+                </p>
+              </div>
+            </div>
+          ) : (
+            <p className="text-sm text-ice/40 py-6 text-center">No projects yet — create one above.</p>
+          )
+        )}
       </div>
     </div>
   );

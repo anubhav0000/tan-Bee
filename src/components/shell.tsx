@@ -1,5 +1,6 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import { useState } from "react";
+import { useLocalStorage } from "@/lib/store";
 import {
   LayoutDashboard,
   BookOpen,
@@ -30,6 +31,7 @@ const NAV = [
 
 function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
   const pathname = useRouterState({ select: (r) => r.location.pathname });
+  const [tutorialMode, setTutorialMode] = useLocalStorage<boolean>("sh_tutorial_mode", false);
 
   return (
     <>
@@ -63,7 +65,15 @@ function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
           );
         })}
       </nav>
-      <div className="mt-auto p-4 border-t border-white/10">
+      <div className="mt-auto p-4 border-t border-white/10 flex flex-col gap-3">
+        {tutorialMode && (
+          <button 
+            onClick={() => setTutorialMode(false)}
+            className="w-full text-xs font-semibold py-2 px-3 rounded bg-mint/10 text-mint hover:bg-mint/20 transition-colors border border-mint/20 flex items-center justify-center gap-1.5"
+          >
+            <X className="size-3" /> Dismiss Tutorial
+          </button>
+        )}
         <div className="rounded-lg bg-white/5 p-3">
           <div className="flex items-center justify-between font-mono text-[10px] text-ice/50">
             <span>DATA</span>
