@@ -124,7 +124,7 @@ function TimetablePage() {
                         ) : (
                           <button
                             onClick={() => setConfirmDeleteId(c.id)}
-                            className="absolute -top-1.5 -right-1.5 size-4 rounded-full bg-ink text-coral hidden group-hover:grid place-items-center z-10"
+                            className="absolute -top-1.5 -right-1.5 size-4 rounded-full bg-ink text-coral grid place-items-center z-10 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity"
                             aria-label="Remove slot"
                           >
                             <Trash2 className="size-2.5" />
