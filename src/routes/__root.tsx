@@ -128,53 +128,123 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function NameOnboarding({ children }: { children: ReactNode }) {
   const [userName, setUserName] = useLocalStorage<string>("sh_user_name", "");
+  const [tutorialDone, setTutorialDone] = useLocalStorage<boolean>("sh_tutorial_done", false);
   const [draftName, setDraftName] = useState("");
+  const [step, setStep] = useState(0); // 0: Name, 1-3: Tutorial
   const hydrated = useHydrated();
 
   if (!hydrated) return null;
 
-  if (!userName) {
-    return (
-      <div className="min-h-screen bg-panel flex flex-col items-center justify-center p-4 relative overflow-hidden">
-        <div className="absolute top-1/3 -left-20 w-72 h-72 bg-mint/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute -bottom-20 -right-20 w-96 h-96 bg-coral/5 rounded-full blur-3xl pointer-events-none" />
-        
-        <div className="glass-card max-w-sm w-full p-8 flex flex-col items-center text-center animate-rise relative z-10">
-          <div className="w-20 h-20 rounded-3xl bg-white/5 border border-white/10 flex items-center justify-center mb-6 shadow-xl">
-            <img src="/logo.png" alt="Tan bee" className="w-10 h-10 drop-shadow-md" />
-          </div>
-          <h1 className="font-display text-4xl text-ice mb-2">Welcome to Tan bee</h1>
-          <p className="text-sm text-ice/60 mb-8">What should we call you?</p>
-          
-          <form 
-            onSubmit={(e) => { 
-              e.preventDefault(); 
-              if (draftName.trim()) setUserName(draftName.trim()); 
-            }}
-            className="w-full flex flex-col gap-3"
-          >
-            <input
-              type="text"
-              autoFocus
-              value={draftName}
-              onChange={(e) => setDraftName(e.target.value)}
-              placeholder="Your name"
-              className="w-full rounded-xl bg-white/5 border border-white/10 px-4 py-3 text-ice text-center placeholder:text-ice/30 outline-none focus:border-mint/50 transition-colors"
-            />
-            <button 
-              type="submit"
-              disabled={!draftName.trim()}
-              className="w-full rounded-xl bg-mint px-4 py-3 text-ink font-semibold disabled:opacity-50 disabled:cursor-not-allowed hover:bg-mint/90 transition-colors shadow-lg shadow-mint/10"
-            >
-              Get Started
-            </button>
-          </form>
-        </div>
-      </div>
-    );
+  // Fully onboarded users bypass
+  if (userName && tutorialDone) {
+    return <>{children}</>;
   }
 
-  return <>{children}</>;
+  // Handle users who have a name but haven't finished the tutorial (e.g. from previous version)
+  if (userName && !tutorialDone && step === 0) {
+    setStep(1);
+  }
+
+  const handleNext = () => {
+    if (step < 3) {
+      setStep(s => s + 1);
+    } else {
+      setTutorialDone(true);
+    }
+  };
+
+  const handleSkip = () => {
+    setTutorialDone(true);
+  };
+
+  return (
+    <div className="min-h-screen bg-panel flex flex-col items-center justify-center p-4 relative overflow-hidden">
+      <div className="absolute top-1/3 -left-20 w-72 h-72 bg-mint/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute -bottom-20 -right-20 w-96 h-96 bg-coral/5 rounded-full blur-3xl pointer-events-none" />
+      
+      <div className="glass-card max-w-sm w-full p-8 flex flex-col items-center text-center animate-rise relative z-10 transition-all duration-300 min-h-[360px] justify-center">
+        
+        {step === 0 && (
+          <div className="w-full flex flex-col items-center animate-fade-in">
+            <div className="w-20 h-20 rounded-3xl bg-white/5 border border-white/10 flex items-center justify-center mb-6 shadow-xl">
+              <img src="/logo.png" alt="Tan bee" className="w-10 h-10 drop-shadow-md" />
+            </div>
+            <h1 className="font-display text-4xl text-ice mb-2">Welcome to Tan bee</h1>
+            <p className="text-sm text-ice/60 mb-8">What should we call you?</p>
+            
+            <form 
+              onSubmit={(e) => { 
+                e.preventDefault(); 
+                if (draftName.trim()) {
+                  setUserName(draftName.trim());
+                  setStep(1);
+                }
+              }}
+              className="w-full flex flex-col gap-3"
+            >
+              <input
+                type="text"
+                autoFocus
+                value={draftName}
+                onChange={(e) => setDraftName(e.target.value)}
+                placeholder="Your name"
+                className="w-full rounded-xl bg-white/5 border border-white/10 px-4 py-3 text-ice text-center placeholder:text-ice/30 outline-none focus:border-mint/50 transition-colors"
+              />
+              <button 
+                type="submit"
+                disabled={!draftName.trim()}
+                className="w-full rounded-xl bg-mint px-4 py-3 text-ink font-semibold disabled:opacity-50 disabled:cursor-not-allowed hover:bg-mint/90 transition-colors shadow-lg shadow-mint/10"
+              >
+                Continue
+              </button>
+            </form>
+          </div>
+        )}
+
+        {step === 1 && (
+          <div className="w-full flex flex-col items-center animate-fade-in">
+            <div className="w-16 h-16 rounded-2xl bg-coral/10 border border-coral/20 flex items-center justify-center mb-6 text-coral font-display text-2xl">1</div>
+            <h2 className="font-display text-2xl text-ice mb-3">Track Your Life</h2>
+            <p className="text-sm text-ice/70 mb-10 leading-relaxed px-2">
+              Never miss a beat. Log your attendance, manage classes, and keep an eye on upcoming exams all in one place.
+            </p>
+            <div className="w-full flex gap-3 mt-auto">
+              <button onClick={handleSkip} className="flex-1 py-3 text-ice/50 text-sm font-semibold hover:text-ice transition-colors">Skip</button>
+              <button onClick={handleNext} className="flex-1 rounded-xl bg-white/10 px-4 py-3 text-ice font-semibold hover:bg-white/20 transition-colors">Next</button>
+            </div>
+          </div>
+        )}
+
+        {step === 2 && (
+          <div className="w-full flex flex-col items-center animate-fade-in">
+            <div className="w-16 h-16 rounded-2xl bg-mint/10 border border-mint/20 flex items-center justify-center mb-6 text-mint font-display text-2xl">2</div>
+            <h2 className="font-display text-2xl text-ice mb-3">Money & Projects</h2>
+            <p className="text-sm text-ice/70 mb-10 leading-relaxed px-2">
+              Track your daily expenses, monitor group project contributions, and easily manage your budget.
+            </p>
+            <div className="w-full flex gap-3 mt-auto">
+              <button onClick={handleSkip} className="flex-1 py-3 text-ice/50 text-sm font-semibold hover:text-ice transition-colors">Skip</button>
+              <button onClick={handleNext} className="flex-1 rounded-xl bg-white/10 px-4 py-3 text-ice font-semibold hover:bg-white/20 transition-colors">Next</button>
+            </div>
+          </div>
+        )}
+
+        {step === 3 && (
+          <div className="w-full flex flex-col items-center animate-fade-in">
+            <div className="w-16 h-16 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center mb-6 text-ice font-display text-2xl">3</div>
+            <h2 className="font-display text-2xl text-ice mb-3">100% Private</h2>
+            <p className="text-sm text-ice/70 mb-10 leading-relaxed px-2">
+              Your data belongs to you. Everything is stored locally on this device. No servers, no tracking.
+            </p>
+            <button onClick={handleNext} className="w-full rounded-xl bg-mint px-4 py-3 text-ink font-semibold hover:bg-mint/90 transition-colors shadow-lg shadow-mint/10 mt-auto">
+              Let's Go
+            </button>
+          </div>
+        )}
+
+      </div>
+    </div>
+  );
 }
 
 function RootComponent() {
