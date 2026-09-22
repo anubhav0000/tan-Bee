@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import {
   useLocalStorage,
+  useHydrated,
   SEED_SUBJECTS,
   SEED_ASSIGNMENTS,
   SEED_TIMETABLE,
@@ -9,12 +10,17 @@ import {
   SEED_EXPENSES,
   colorDot,
   colorBar,
+  computeAttendance,
+  toDateKey,
+  examsOn,
+  inr,
   DAYS,
   type Subject,
   type Assignment,
   type ClassSlot,
   type Exam,
   type AttendanceRecord,
+  type AttendanceMarks,
   type Expense,
 } from "@/lib/store";
 
