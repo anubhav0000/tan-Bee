@@ -19,6 +19,7 @@ import {
   FileText,
   Sparkles,
   Settings,
+  Activity,
 } from "lucide-react";
 
 const NAV = [
@@ -34,6 +35,7 @@ const NAV = [
   { title: "Study Notes", url: "/notes", icon: FileText, dot: "bg-mint/60", requiresStudyMode: true },
   { title: "AI Study Buddy", url: "/ai-chat", icon: Sparkles, dot: "bg-viol/80", requiresStudyMode: true },
   { title: "Stopwatch", url: "/stopwatch", icon: Timer, dot: "bg-rose/50", requiresStudyMode: true },
+  { title: "Health & Wellness", url: "/health", icon: Activity, dot: "bg-rose", requiresHealthMode: true },
   { title: "QR Generator", url: "/qr", icon: QrCode, dot: "bg-coral/50" },
   { title: "Settings", url: "/settings", icon: Settings, dot: "bg-ice/50" },
   { title: "About", url: "/about", icon: Info, dot: "bg-mint/80" },
@@ -43,6 +45,7 @@ function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
   const pathname = useRouterState({ select: (r) => r.location.pathname });
   const [tutorialMode, setTutorialMode] = useLocalStorage<boolean>("sh_tutorial_mode", false);
   const [studyMode] = useLocalStorage<boolean>("sh_study_mode", true);
+  const [healthMode] = useLocalStorage<boolean>("sh_health_mode", false);
 
   return (
     <>
@@ -58,6 +61,7 @@ function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
       <nav className="px-3 space-y-0.5 text-[13px] font-medium">
         {NAV.map((item) => {
           if ((item as any).requiresStudyMode && !studyMode) return null;
+          if ((item as any).requiresHealthMode && !healthMode) return null;
           
           const active = pathname === item.url;
           return (

@@ -16,6 +16,7 @@ import { Route as AssignmentsRouteImport } from './routes/assignments'
 import { Route as AttendanceRouteImport } from './routes/attendance'
 import { Route as ExamsRouteImport } from './routes/exams'
 import { Route as ExpensesRouteImport } from './routes/expenses'
+import { Route as HealthRouteImport } from './routes/health'
 import { Route as HolidaysRouteImport } from './routes/holidays'
 import { Route as NotesRouteImport } from './routes/notes'
 import { Route as ProjectsRouteImport } from './routes/projects'
@@ -58,6 +59,11 @@ const ExamsRoute = ExamsRouteImport.update({
 const ExpensesRoute = ExpensesRouteImport.update({
   id: '/expenses',
   path: '/expenses',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HealthRoute = HealthRouteImport.update({
+  id: '/health',
+  path: '/health',
   getParentRoute: () => rootRouteImport,
 } as any)
 const HolidaysRoute = HolidaysRouteImport.update({
@@ -109,6 +115,7 @@ export interface FileRoutesByFullPath {
   '/attendance': typeof AttendanceRoute
   '/exams': typeof ExamsRoute
   '/expenses': typeof ExpensesRoute
+  '/health': typeof HealthRoute
   '/holidays': typeof HolidaysRoute
   '/notes': typeof NotesRoute
   '/projects': typeof ProjectsRoute
@@ -126,6 +133,7 @@ export interface FileRoutesByTo {
   '/attendance': typeof AttendanceRoute
   '/exams': typeof ExamsRoute
   '/expenses': typeof ExpensesRoute
+  '/health': typeof HealthRoute
   '/holidays': typeof HolidaysRoute
   '/notes': typeof NotesRoute
   '/projects': typeof ProjectsRoute
@@ -144,6 +152,7 @@ export interface FileRoutesById {
   '/attendance': typeof AttendanceRoute
   '/exams': typeof ExamsRoute
   '/expenses': typeof ExpensesRoute
+  '/health': typeof HealthRoute
   '/holidays': typeof HolidaysRoute
   '/notes': typeof NotesRoute
   '/projects': typeof ProjectsRoute
@@ -163,6 +172,7 @@ export interface FileRouteTypes {
     | '/attendance'
     | '/exams'
     | '/expenses'
+    | '/health'
     | '/holidays'
     | '/notes'
     | '/projects'
@@ -180,6 +190,7 @@ export interface FileRouteTypes {
     | '/attendance'
     | '/exams'
     | '/expenses'
+    | '/health'
     | '/holidays'
     | '/notes'
     | '/projects'
@@ -197,6 +208,7 @@ export interface FileRouteTypes {
     | '/attendance'
     | '/exams'
     | '/expenses'
+    | '/health'
     | '/holidays'
     | '/notes'
     | '/projects'
@@ -215,6 +227,7 @@ export interface RootRouteChildren {
   AttendanceRoute: typeof AttendanceRoute
   ExamsRoute: typeof ExamsRoute
   ExpensesRoute: typeof ExpensesRoute
+  HealthRoute: typeof HealthRoute
   HolidaysRoute: typeof HolidaysRoute
   NotesRoute: typeof NotesRoute
   ProjectsRoute: typeof ProjectsRoute
@@ -274,6 +287,13 @@ declare module '@tanstack/react-router' {
       path: '/expenses'
       fullPath: '/expenses'
       preLoaderRoute: typeof ExpensesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/health': {
+      id: '/health'
+      path: '/health'
+      fullPath: '/health'
+      preLoaderRoute: typeof HealthRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/holidays': {
@@ -343,6 +363,7 @@ const rootRouteChildren: RootRouteChildren = {
   AttendanceRoute: AttendanceRoute,
   ExamsRoute: ExamsRoute,
   ExpensesRoute: ExpensesRoute,
+  HealthRoute: HealthRoute,
   HolidaysRoute: HolidaysRoute,
   NotesRoute: NotesRoute,
   ProjectsRoute: ProjectsRoute,

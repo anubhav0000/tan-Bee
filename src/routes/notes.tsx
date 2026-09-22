@@ -22,7 +22,7 @@ function NotesPage() {
   const [subjectId, setSubjectId] = useState(subjects[0]?.id ?? "");
   const [topic, setTopic] = useState("");
   const [summary, setSummary] = useState("");
-  const [date, setDate] = useState(() => new Date().toISOString().split("T")[0]);
+  const [date, setDate] = useState(() => new Date().toISOString().split("T")[0]!);
   
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
 
