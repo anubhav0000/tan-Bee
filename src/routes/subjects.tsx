@@ -6,6 +6,7 @@ import {
   SEED_SUBJECTS,
   uid,
   colorDot,
+  SUBJECT_COLORS,
   type Subject,
   type SubjectColor,
 } from "@/lib/store";
@@ -22,7 +23,7 @@ export const Route = createFileRoute("/subjects")({
   component: SubjectsPage,
 });
 
-const COLORS: SubjectColor[] = ["sky", "coral", "mint", "viol"];
+const COLORS: SubjectColor[] = SUBJECT_COLORS;
 
 function SubjectsPage() {
   const [subjects, setSubjects] = useLocalStorage<Subject[]>("sh_subjects", SEED_SUBJECTS);
@@ -57,7 +58,7 @@ function SubjectsPage() {
             placeholder="Code (e.g. CS 201)"
             className="w-32 rounded-lg bg-white/5 border border-white/10 px-3 py-2 text-sm text-ice placeholder:text-ice/30 outline-none focus:border-mint/50"
           />
-          <div className="flex items-center gap-1.5">
+          <div className="flex flex-wrap items-center gap-1.5">
             {COLORS.map((c) => (
               <button
                 key={c}

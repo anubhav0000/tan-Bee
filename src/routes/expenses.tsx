@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { Plus, Trash2 } from "lucide-react";
-import { useLocalStorage, SEED_EXPENSES, uid, type Expense } from "@/lib/store";
+import { useLocalStorage, SEED_EXPENSES, uid, inr, type Expense } from "@/lib/store";
 
 export const Route = createFileRoute("/expenses")({
   head: () => ({
@@ -57,14 +57,14 @@ function ExpensesPage() {
         <div className="flex items-end justify-between mb-4">
           <div>
             <p className="section-label">THIS MONTH</p>
-            <p className="font-display text-5xl text-ice mt-2 leading-none">${monthTotal.toFixed(0)}</p>
+            <p className="font-display text-5xl text-ice mt-2 leading-none">{inr(monthTotal)}</p>
           </div>
           <p className="font-mono text-[10px] text-ice/40">{monthExpenses.length} ENTRIES</p>
         </div>
         {byCat.length > 0 && (
           <div className="flex h-2 rounded-full overflow-hidden bg-white/10">
             {byCat.map((c) => (
-              <div key={c.name} title={`${c.name} $${c.total}`} className={CAT_COLORS[c.name]} style={{ width: `${(c.total / monthTotal) * 100}%` }} />
+              <div key={c.name} title={`${c.name} ${inr(c.total)}`} className={CAT_COLORS[c.name]} style={{ width: `${(c.total / monthTotal) * 100}%` }} />
             ))}
           </div>
         )}
@@ -72,7 +72,7 @@ function ExpensesPage() {
           {byCat.map((c) => (
             <span key={c.name} className="flex items-center gap-1.5">
               <span className={`size-2 rounded ${CAT_COLORS[c.name]}`} />
-              {c.name.toUpperCase()} ${c.total}
+              {c.name.toUpperCase()} {inr(c.total)}
             </span>
           ))}
         </div>
@@ -102,7 +102,7 @@ function ExpensesPage() {
             step="0.01"
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
-            placeholder="$ 0.00"
+            placeholder="₹ 0"
             className="w-24 rounded-lg bg-white/5 border border-white/10 px-3 py-2 text-sm text-ice placeholder:text-ice/30 outline-none focus:border-mint/50"
           />
           <button onClick={add} className="inline-flex items-center gap-1.5 rounded-lg bg-mint px-4 py-2 text-sm font-semibold text-ink hover:bg-mint/90">
@@ -123,7 +123,7 @@ function ExpensesPage() {
                   {e.category.toUpperCase()} · {e.date}
                 </p>
               </div>
-              <span className="ml-auto font-display text-xl text-ice">${e.amount.toFixed(0)}</span>
+              <span className="ml-auto font-display text-xl text-ice">{inr(e.amount)}</span>
               <button
                 onClick={() => setExpenses(expenses.filter((x) => x.id !== e.id))}
                 className="text-ice/30 hover:text-coral transition-colors"

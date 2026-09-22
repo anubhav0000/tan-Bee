@@ -143,7 +143,7 @@ export function computeAttendance(
     out[sid] = { attended: r.attended, total: r.total };
   }
   for (const [k, status] of Object.entries(marks)) {
-    const slotId = k.split("__")[1];
+    const slotId = k.split("__")[1] ?? "";
     const slot = slotById[slotId];
     if (!slot) continue;
     const cur = out[slot.subjectId] ?? { attended: 0, total: 0 };
