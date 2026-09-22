@@ -1,0 +1,27 @@
+{
+  "name": "Tan bee",
+  "short_name": "Tan bee",
+  "description": "Tan bee: dashboard, subjects, assignments, timetable, exam reminders, attendance, expenses, group projects and QR tools. Fully responsive for both mobile and laptop users.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0F0F11",
+  "theme_color": "#63f2b8",
+  "icons": [
+    {
+      "src": "/logo.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/logo.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "/logo.png",
+      "sizes": "any",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

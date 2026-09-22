@@ -12,6 +12,7 @@ import {
   QrCode,
   Menu,
   X,
+  Info,
 } from "lucide-react";
 
 const NAV = [
@@ -24,6 +25,7 @@ const NAV = [
   { title: "Expenses", url: "/expenses", icon: Wallet, dot: "bg-ice/30" },
   { title: "Group Projects", url: "/projects", icon: Users, dot: "bg-sky/50" },
   { title: "QR Generator", url: "/qr", icon: QrCode, dot: "bg-coral/50" },
+  { title: "About", url: "/about", icon: Info, dot: "bg-mint/80" },
 ] as const;
 
 function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
@@ -32,11 +34,11 @@ function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
   return (
     <>
       <div className="flex items-center gap-2.5 px-5 py-5">
-        <div className="size-8 rounded-md bg-mint grid place-items-center">
-          <span className="font-display text-ink text-lg -mt-0.5">S</span>
+        <div className="size-8 rounded-md overflow-hidden bg-mint grid place-items-center">
+          <img src="/logo.png" alt="Tan bee Logo" className="w-full h-full object-cover" />
         </div>
         <div>
-          <p className="font-display tracking-wide text-ice leading-none">STUDENTHUB</p>
+          <p className="font-display tracking-wide text-ice leading-none uppercase">Tan bee</p>
           <p className="font-mono text-[9px] text-ice/40 mt-1 tracking-[0.2em]">SESS 2026 · LOCAL</p>
         </div>
       </div>
@@ -111,7 +113,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
             <button onClick={() => setOpen(true)} className="text-ice/70" aria-label="Open menu">
               <Menu className="size-5" />
             </button>
-            <span className="font-display tracking-wide text-ice">STUDENTHUB</span>
+            <span className="font-display tracking-wide text-ice uppercase">Tan bee</span>
           </div>
           <main className="flex-1 p-5 sm:p-8">{children}</main>
         </div>

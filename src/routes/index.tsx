@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useState } from "react";
 import {
   useLocalStorage,
   useHydrated,
@@ -27,9 +28,9 @@ import {
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Dashboard — StudentHub" },
+      { title: "Dashboard — Tan bee" },
       { name: "description", content: "Your day at a glance: classes, assignments, attendance, expenses and the next exam." },
-      { property: "og:title", content: "Dashboard — StudentHub" },
+      { property: "og:title", content: "Dashboard — Tan bee" },
       { property: "og:description", content: "Your day at a glance: classes, assignments, attendance, expenses and the next exam." },
     ],
   }),
@@ -44,6 +45,7 @@ function Dashboard() {
   const [baseline] = useLocalStorage<Record<string, AttendanceRecord>>("sh_attendance", SEED_ATTENDANCE);
   const [marks] = useLocalStorage<AttendanceMarks>("sh_att_marks", {});
   const [expenses] = useLocalStorage<Expense[]>("sh_expenses", SEED_EXPENSES);
+  const [userName] = useLocalStorage<string>("sh_user_name", "");
   const hydrated = useHydrated();
 
   const now = new Date();
@@ -86,7 +88,7 @@ function Dashboard() {
     <div>
       <header className="flex flex-wrap items-end justify-between gap-4 mb-7 animate-rise">
         <div>
-          <p className="font-mono text-[10px] tracking-[0.25em] text-mint mb-2">// OVERVIEW</p>
+          <p className="font-mono text-[10px] tracking-[0.25em] text-mint mb-2">// HELLO, {userName.toUpperCase()}</p>
           <h1 className="font-display text-4xl sm:text-5xl text-ice leading-[0.9] tracking-tight">{dateLabel}</h1>
         </div>
         <div className="text-right">

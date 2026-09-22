@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Plus, Trash2 } from "lucide-react";
 import {
   useLocalStorage,
@@ -15,9 +15,9 @@ import {
 export const Route = createFileRoute("/timetable")({
   head: () => ({
     meta: [
-      { title: "Class Timetable — StudentHub" },
+      { title: "Class Timetable — Tan bee" },
       { name: "description", content: "Your weekly class timetable, color-coded by subject." },
-      { property: "og:title", content: "Class Timetable — StudentHub" },
+      { property: "og:title", content: "Class Timetable — Tan bee" },
       { property: "og:description", content: "Your weekly class timetable, color-coded by subject." },
     ],
   }),
@@ -31,6 +31,13 @@ function TimetablePage() {
   const [day, setDay] = useState(0);
   const [start, setStart] = useState("09:00");
   const [room, setRoom] = useState("");
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!confirmDeleteId) return;
+    const t = setTimeout(() => setConfirmDeleteId(null), 3000);
+    return () => clearTimeout(t);
+  }, [confirmDeleteId]);
 
   const subjectById = Object.fromEntries(subjects.map((s) => [s.id, s]));
 
@@ -106,13 +113,23 @@ function TimetablePage() {
                         <p className="font-mono text-[9px] text-ink/70">
                           {c.start} · {c.room}
                         </p>
-                        <button
-                          onClick={() => setSlots(slots.filter((x) => x.id !== c.id))}
-                          className="absolute -top-1.5 -right-1.5 size-4 rounded-full bg-ink text-coral hidden group-hover:grid place-items-center"
-                          aria-label="Remove slot"
-                        >
-                          <Trash2 className="size-2.5" />
-                        </button>
+                        {confirmDeleteId === c.id ? (
+                          <button
+                            onClick={() => setSlots(slots.filter((x) => x.id !== c.id))}
+                            className="absolute -top-1.5 -right-1.5 px-1.5 py-0.5 rounded-md bg-coral text-ink text-[9px] font-bold z-10"
+                            aria-label="Confirm delete"
+                          >
+                            CONFIRM
+                          </button>
+                        ) : (
+                          <button
+                            onClick={() => setConfirmDeleteId(c.id)}
+                            className="absolute -top-1.5 -right-1.5 size-4 rounded-full bg-ink text-coral hidden group-hover:grid place-items-center z-10"
+                            aria-label="Remove slot"
+                          >
+                            <Trash2 className="size-2.5" />
+                          </button>
+                        )}
                       </div>
                     );
                   })}

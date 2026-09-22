@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Plus, Trash2 } from "lucide-react";
 import {
   useLocalStorage,
@@ -14,9 +14,9 @@ import {
 export const Route = createFileRoute("/exams")({
   head: () => ({
     meta: [
-      { title: "Exam Reminders — StudentHub" },
+      { title: "Exam Reminders — Tan bee" },
       { name: "description", content: "Upcoming exams with live countdowns." },
-      { property: "og:title", content: "Exam Reminders — StudentHub" },
+      { property: "og:title", content: "Exam Reminders — Tan bee" },
       { property: "og:description", content: "Upcoming exams with live countdowns." },
     ],
   }),
@@ -30,6 +30,13 @@ function ExamsPage() {
   const [subjectId, setSubjectId] = useState(subjects[0]?.id ?? "");
   const [date, setDate] = useState("");
   const [venue, setVenue] = useState("");
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!confirmDeleteId) return;
+    const t = setTimeout(() => setConfirmDeleteId(null), 3000);
+    return () => clearTimeout(t);
+  }, [confirmDeleteId]);
 
   const subjectById = Object.fromEntries(subjects.map((s) => [s.id, s]));
   const now = Date.now();
@@ -107,13 +114,22 @@ function ExamsPage() {
               <span className={`ml-auto font-mono text-[10px] px-2 py-1 rounded ${past ? "bg-white/5 text-ice/40" : hrs <= 72 ? "bg-coral/15 text-coral" : "bg-mint/10 text-mint"}`}>
                 {countdown}
               </span>
-              <button
-                onClick={() => setExams(exams.filter((x) => x.id !== e.id))}
-                className="text-ice/30 hover:text-coral transition-colors"
-                aria-label="Delete exam"
-              >
-                <Trash2 className="size-4" />
-              </button>
+              {confirmDeleteId === e.id ? (
+                <button
+                  onClick={() => setExams(exams.filter((x) => x.id !== e.id))}
+                  className="ml-2 text-ink bg-coral hover:bg-coral/90 px-3 py-1.5 rounded-md text-xs font-bold transition-colors"
+                >
+                  Confirm Delete
+                </button>
+              ) : (
+                <button
+                  onClick={() => setConfirmDeleteId(e.id)}
+                  className="text-ice/30 hover:text-coral transition-colors ml-2"
+                  aria-label="Delete exam"
+                >
+                  <Trash2 className="size-4" />
+                </button>
+              )}
             </div>
           );
         })}

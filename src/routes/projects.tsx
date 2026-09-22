@@ -1,14 +1,14 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Plus, Trash2, Check, UserPlus, X } from "lucide-react";
 import { useLocalStorage, SEED_PROJECTS, uid, type Project } from "@/lib/store";
 
 export const Route = createFileRoute("/projects")({
   head: () => ({
     meta: [
-      { title: "Group Projects — StudentHub" },
+      { title: "Group Projects — Tan bee" },
       { name: "description", content: "Manage group projects, members and shared tasks." },
-      { property: "og:title", content: "Group Projects — StudentHub" },
+      { property: "og:title", content: "Group Projects — Tan bee" },
       { property: "og:description", content: "Manage group projects, members and shared tasks." },
     ],
   }),
@@ -22,6 +22,20 @@ function ProjectsPage() {
   const [name, setName] = useState("");
   const [taskDraft, setTaskDraft] = useState<Record<string, string>>({});
   const [memberDraft, setMemberDraft] = useState<Record<string, string>>({});
+  const [confirmDeleteProjectId, setConfirmDeleteProjectId] = useState<string | null>(null);
+  const [confirmDeleteTaskId, setConfirmDeleteTaskId] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!confirmDeleteProjectId) return;
+    const t = setTimeout(() => setConfirmDeleteProjectId(null), 3000);
+    return () => clearTimeout(t);
+  }, [confirmDeleteProjectId]);
+
+  useEffect(() => {
+    if (!confirmDeleteTaskId) return;
+    const t = setTimeout(() => setConfirmDeleteTaskId(null), 3000);
+    return () => clearTimeout(t);
+  }, [confirmDeleteTaskId]);
 
   const update = (id: string, patch: Partial<Project>) =>
     setProjects(projects.map((p) => (p.id === id ? { ...p, ...patch } : p)));
@@ -63,13 +77,22 @@ function ProjectsPage() {
                 <span className={`ml-auto font-mono text-[10px] px-2 py-1 rounded ${pct === 100 ? "bg-mint/10 text-mint" : pct >= 50 ? "bg-sky/10 text-sky" : "bg-coral/10 text-coral"}`}>
                   {pct === 100 ? "COMPLETE" : pct >= 50 ? "ON TRACK" : "AT RISK"}
                 </span>
-                <button
-                  onClick={() => setProjects(projects.filter((x) => x.id !== p.id))}
-                  className="text-ice/30 hover:text-coral transition-colors"
-                  aria-label="Delete project"
-                >
-                  <Trash2 className="size-4" />
-                </button>
+                {confirmDeleteProjectId === p.id ? (
+                  <button
+                    onClick={() => setProjects(projects.filter((x) => x.id !== p.id))}
+                    className="ml-2 text-ink bg-coral hover:bg-coral/90 px-3 py-1.5 rounded-md text-xs font-bold transition-colors"
+                  >
+                    Confirm Delete
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => setConfirmDeleteProjectId(p.id)}
+                    className="text-ice/30 hover:text-coral transition-colors ml-2"
+                    aria-label="Delete project"
+                  >
+                    <Trash2 className="size-4" />
+                  </button>
+                )}
               </div>
 
               <div className="mt-3 h-1.5 rounded-full bg-white/10 overflow-hidden">
@@ -133,13 +156,22 @@ function ProjectsPage() {
                         <option key={m}>{m}</option>
                       ))}
                     </select>
-                    <button
-                      onClick={() => update(p.id, { tasks: p.tasks.filter((x) => x.id !== t.id) })}
-                      className="text-ice/30 hover:text-coral"
-                      aria-label="Delete task"
-                    >
-                      <Trash2 className="size-3.5" />
-                    </button>
+                    {confirmDeleteTaskId === t.id ? (
+                      <button
+                        onClick={() => update(p.id, { tasks: p.tasks.filter((x) => x.id !== t.id) })}
+                        className="ml-2 text-ink bg-coral hover:bg-coral/90 px-2 py-1 rounded text-[10px] font-bold transition-colors"
+                      >
+                        Confirm
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => setConfirmDeleteTaskId(t.id)}
+                        className="text-ice/30 hover:text-coral ml-2"
+                        aria-label="Delete task"
+                      >
+                        <Trash2 className="size-3.5" />
+                      </button>
+                    )}
                   </div>
                 ))}
                 <input

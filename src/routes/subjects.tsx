@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Plus, Trash2 } from "lucide-react";
 import {
   useLocalStorage,
@@ -14,9 +14,9 @@ import {
 export const Route = createFileRoute("/subjects")({
   head: () => ({
     meta: [
-      { title: "Subjects — StudentHub" },
+      { title: "Subjects — Tan bee" },
       { name: "description", content: "Manage your subjects, codes and colors." },
-      { property: "og:title", content: "Subjects — StudentHub" },
+      { property: "og:title", content: "Subjects — Tan bee" },
       { property: "og:description", content: "Manage your subjects, codes and colors." },
     ],
   }),
@@ -30,6 +30,13 @@ function SubjectsPage() {
   const [name, setName] = useState("");
   const [code, setCode] = useState("");
   const [color, setColor] = useState<SubjectColor>("sky");
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!confirmDeleteId) return;
+    const t = setTimeout(() => setConfirmDeleteId(null), 3000);
+    return () => clearTimeout(t);
+  }, [confirmDeleteId]);
 
   const add = () => {
     if (!name.trim()) return;
@@ -89,13 +96,22 @@ function SubjectsPage() {
               <p className="text-sm font-semibold text-ice">{s.name}</p>
               <p className="font-mono text-[10px] text-ice/40 tracking-wider">{s.code}</p>
             </div>
-            <button
-              onClick={() => setSubjects(subjects.filter((x) => x.id !== s.id))}
-              className="ml-auto text-ice/30 hover:text-coral transition-colors"
-              aria-label={`Delete ${s.name}`}
-            >
-              <Trash2 className="size-4" />
-            </button>
+            {confirmDeleteId === s.id ? (
+              <button
+                onClick={() => setSubjects(subjects.filter((x) => x.id !== s.id))}
+                className="ml-auto text-ink bg-coral hover:bg-coral/90 px-3 py-1.5 rounded-md text-xs font-bold transition-colors"
+              >
+                Confirm Delete
+              </button>
+            ) : (
+              <button
+                onClick={() => setConfirmDeleteId(s.id)}
+                className="ml-auto text-ice/30 hover:text-coral transition-colors"
+                aria-label={`Delete ${s.name}`}
+              >
+                <Trash2 className="size-4" />
+              </button>
+            )}
           </div>
         ))}
         {subjects.length === 0 && <p className="text-sm text-ice/40 py-6 text-center">No subjects yet — add one above.</p>}

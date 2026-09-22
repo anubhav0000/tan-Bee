@@ -7,11 +7,12 @@ import {
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
-import { useEffect, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { Shell } from "@/components/shell";
+import { useLocalStorage, useHydrated } from "@/lib/store";
 
 function NotFoundComponent() {
   return (
@@ -76,18 +77,20 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "StudentHub — your semester, in one place" },
+      { title: "Tan bee" },
       {
         name: "description",
         content:
-          "StudentHub: dashboard, subjects, assignments, timetable, exam reminders, attendance, expenses, group projects and QR tools — all on your device.",
+          "Tan bee: dashboard, subjects, assignments, timetable, exam reminders, attendance, expenses, group projects and QR tools. Fully responsive for both mobile and laptop users.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "theme-color", content: "#0F0F11" },
     ],
     links: [
+      { rel: "manifest", href: "/manifest.json" },
       { rel: "stylesheet", href: appCss },
-      { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
+      { rel: "icon", href: "/logo.png", type: "image/png" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
@@ -111,9 +114,71 @@ function RootShell({ children }: { children: ReactNode }) {
       <body>
         {children}
         <Scripts />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              if ('serviceWorker' in navigator) {
+                window.addEventListener('load', () => {
+                  navigator.serviceWorker.register('/sw.js');
+                });
+              }
+            `,
+          }}
+        />
       </body>
     </html>
   );
+}
+
+function NameOnboarding({ children }: { children: ReactNode }) {
+  const [userName, setUserName] = useLocalStorage<string>("sh_user_name", "");
+  const [draftName, setDraftName] = useState("");
+  const hydrated = useHydrated();
+
+  if (!hydrated) return null;
+
+  if (!userName) {
+    return (
+      <div className="min-h-screen bg-panel flex flex-col items-center justify-center p-4 relative overflow-hidden">
+        <div className="absolute top-1/3 -left-20 w-72 h-72 bg-mint/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute -bottom-20 -right-20 w-96 h-96 bg-coral/5 rounded-full blur-3xl pointer-events-none" />
+        
+        <div className="glass-card max-w-sm w-full p-8 flex flex-col items-center text-center animate-rise relative z-10">
+          <div className="w-20 h-20 rounded-3xl bg-white/5 border border-white/10 flex items-center justify-center mb-6 shadow-xl">
+            <img src="/logo.png" alt="Tan bee" className="w-10 h-10 drop-shadow-md" />
+          </div>
+          <h1 className="font-display text-4xl text-ice mb-2">Welcome to Tan bee</h1>
+          <p className="text-sm text-ice/60 mb-8">What should we call you?</p>
+          
+          <form 
+            onSubmit={(e) => { 
+              e.preventDefault(); 
+              if (draftName.trim()) setUserName(draftName.trim()); 
+            }}
+            className="w-full flex flex-col gap-3"
+          >
+            <input
+              type="text"
+              autoFocus
+              value={draftName}
+              onChange={(e) => setDraftName(e.target.value)}
+              placeholder="Your name"
+              className="w-full rounded-xl bg-white/5 border border-white/10 px-4 py-3 text-ice text-center placeholder:text-ice/30 outline-none focus:border-mint/50 transition-colors"
+            />
+            <button 
+              type="submit"
+              disabled={!draftName.trim()}
+              className="w-full rounded-xl bg-mint px-4 py-3 text-ink font-semibold disabled:opacity-50 disabled:cursor-not-allowed hover:bg-mint/90 transition-colors shadow-lg shadow-mint/10"
+            >
+              Get Started
+            </button>
+          </form>
+        </div>
+      </div>
+    );
+  }
+
+  return <>{children}</>;
 }
 
 function RootComponent() {
@@ -121,9 +186,11 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <Shell>
-        <Outlet />
-      </Shell>
+      <NameOnboarding>
+        <Shell>
+          <Outlet />
+        </Shell>
+      </NameOnboarding>
     </QueryClientProvider>
   );
 }

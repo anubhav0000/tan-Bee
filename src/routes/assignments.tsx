@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Plus, Trash2, Check } from "lucide-react";
 import {
   useLocalStorage,
@@ -14,9 +14,9 @@ import {
 export const Route = createFileRoute("/assignments")({
   head: () => ({
     meta: [
-      { title: "Assignments — StudentHub" },
+      { title: "Assignments — Tan bee" },
       { name: "description", content: "Track assignments and due dates." },
-      { property: "og:title", content: "Assignments — StudentHub" },
+      { property: "og:title", content: "Assignments — Tan bee" },
       { property: "og:description", content: "Track assignments and due dates." },
     ],
   }),
@@ -29,6 +29,13 @@ function AssignmentsPage() {
   const [title, setTitle] = useState("");
   const [subjectId, setSubjectId] = useState(subjects[0]?.id ?? "");
   const [due, setDue] = useState("");
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!confirmDeleteId) return;
+    const t = setTimeout(() => setConfirmDeleteId(null), 3000);
+    return () => clearTimeout(t);
+  }, [confirmDeleteId]);
 
   const subjectById = Object.fromEntries(subjects.map((s) => [s.id, s]));
   const sorted = [...assignments].sort((a, b) => Number(a.done) - Number(b.done) || a.due.localeCompare(b.due));
@@ -111,13 +118,22 @@ function AssignmentsPage() {
               >
                 {a.done ? "DONE" : overdue ? "OVERDUE" : `DUE ${a.due.slice(5)}`}
               </span>
-              <button
-                onClick={() => setAssignments(assignments.filter((x) => x.id !== a.id))}
-                className="text-ice/30 hover:text-coral transition-colors"
-                aria-label="Delete assignment"
-              >
-                <Trash2 className="size-4" />
-              </button>
+              {confirmDeleteId === a.id ? (
+                <button
+                  onClick={() => setAssignments(assignments.filter((x) => x.id !== a.id))}
+                  className="ml-2 text-ink bg-coral hover:bg-coral/90 px-3 py-1.5 rounded-md text-xs font-bold transition-colors"
+                >
+                  Confirm Delete
+                </button>
+              ) : (
+                <button
+                  onClick={() => setConfirmDeleteId(a.id)}
+                  className="text-ice/30 hover:text-coral transition-colors ml-2"
+                  aria-label="Delete assignment"
+                >
+                  <Trash2 className="size-4" />
+                </button>
+              )}
             </div>
           );
         })}

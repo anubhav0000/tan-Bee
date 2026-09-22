@@ -6,9 +6,9 @@ import QRCode from "qrcode";
 export const Route = createFileRoute("/qr")({
   head: () => ({
     meta: [
-      { title: "QR Generator — StudentHub" },
+      { title: "QR Generator — Tan bee" },
       { name: "description", content: "Turn any link or text into a downloadable QR code." },
-      { property: "og:title", content: "QR Generator — StudentHub" },
+      { property: "og:title", content: "QR Generator — Tan bee" },
       { property: "og:description", content: "Turn any link or text into a downloadable QR code." },
     ],
   }),
@@ -63,7 +63,7 @@ function QrPage() {
           {dataUrl && (
             <a
               href={dataUrl}
-              download="studenthub-qr.png"
+              download="tan-bee-qr.png"
               className="mt-4 inline-flex items-center gap-1.5 rounded-lg bg-mint px-4 py-2 text-sm font-semibold text-ink hover:bg-mint/90"
             >
               <Download className="size-4" /> Download PNG
