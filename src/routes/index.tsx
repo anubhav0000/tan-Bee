@@ -41,12 +41,18 @@ function Dashboard() {
   const [assignments] = useLocalStorage<Assignment[]>("sh_assignments", SEED_ASSIGNMENTS);
   const [timetable] = useLocalStorage<ClassSlot[]>("sh_timetable", SEED_TIMETABLE);
   const [exams] = useLocalStorage<Exam[]>("sh_exams", SEED_EXAMS);
-  const [attendance] = useLocalStorage<Record<string, AttendanceRecord>>("sh_attendance", SEED_ATTENDANCE);
+  const [baseline] = useLocalStorage<Record<string, AttendanceRecord>>("sh_attendance", SEED_ATTENDANCE);
+  const [marks] = useLocalStorage<AttendanceMarks>("sh_att_marks", {});
   const [expenses] = useLocalStorage<Expense[]>("sh_expenses", SEED_EXPENSES);
+  const hydrated = useHydrated();
 
   const now = new Date();
   const today = (now.getDay() + 6) % 7; // Mon=0
-  const dateLabel = now.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" });
+  const todayKey = toDateKey(now);
+  const todayExams = examsOn(exams, todayKey);
+  const dateLabel = hydrated
+    ? now.toLocaleDateString("en-IN", { weekday: "long", month: "long", day: "numeric" })
+    : "Today";
 
   const subjectById = Object.fromEntries(subjects.map((s) => [s.id, s]));
   const todaysClasses = timetable
@@ -59,6 +65,7 @@ function Dashboard() {
     return diff <= 7;
   }).length;
 
+  const attendance = computeAttendance(baseline, marks, timetable);
   const attended = Object.values(attendance).reduce((s, r) => s + r.attended, 0);
   const total = Object.values(attendance).reduce((s, r) => s + r.total, 0);
   const pct = total ? Math.round((attended / total) * 100) : 0;
@@ -114,7 +121,7 @@ function Dashboard() {
 
         <Link to="/expenses" className="xl:col-span-3 glass-card p-5 block hover:bg-white/[0.07] transition-colors animate-rise [animation-delay:180ms]">
           <p className="section-label">EXPENSES · THIS MONTH</p>
-          <p className="font-display text-5xl text-ice mt-3 leading-none">${monthSpend}</p>
+          <p className="font-display text-5xl text-ice mt-3 leading-none">{inr(monthSpend)}</p>
           <p className="text-xs text-ice/50 mt-3">{expenses.filter((e) => e.date.startsWith(monthKey)).length} entries logged</p>
           <div className="mt-4 h-1 rounded-full bg-white/10 overflow-hidden">
             <div className="h-full bg-sky" style={{ width: `${Math.min(100, (monthSpend / 500) * 100)}%` }} />
@@ -148,6 +155,11 @@ function Dashboard() {
               FULL TIMETABLE →
             </Link>
           </div>
+          {todayExams.length > 0 && (
+            <p className="mb-3 rounded-lg border border-coral/30 bg-coral/[0.07] px-3 py-2 font-mono text-[10px] tracking-[0.15em] text-coral">
+              EXAM DAY · ATTENDANCE NOT COUNTED TODAY
+            </p>
+          )}
           {todaysClasses.length === 0 ? (
             <p className="text-sm text-ice/50 py-4">No classes today. Add slots on the timetable page.</p>
           ) : (
