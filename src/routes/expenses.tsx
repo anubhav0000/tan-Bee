@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Plus, Trash2, Settings, Undo, Check, X, ShieldAlert, IndianRupee } from "lucide-react";
+import { Plus, Trash2, Settings, Undo, Check, X, ShieldAlert, IndianRupee, QrCode } from "lucide-react";
 import { useLocalStorage, SEED_EXPENSES, uid, inr, type Expense, type ClearEvent } from "@/lib/store";
 
 export const Route = createFileRoute("/expenses")({
@@ -41,6 +41,15 @@ function ExpensesPage() {
   const [confirmState, setConfirmState] = useState<"none" | "partial" | "full">("none");
   const [recentClearId, setRecentClearId] = useState<string | null>(null);
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
+  const [countdown, setCountdown] = useState(0);
+
+  useEffect(() => {
+    let t: ReturnType<typeof setTimeout>;
+    if (confirmState !== "none" && countdown > 0) {
+      t = setTimeout(() => setCountdown(c => c - 1), 1000);
+    }
+    return () => clearTimeout(t);
+  }, [countdown, confirmState]);
 
   useEffect(() => {
     if (!confirmDeleteId) return;
@@ -83,6 +92,7 @@ function ExpensesPage() {
     
     if (confirmState === "none") {
       setConfirmState(full ? "full" : "partial");
+      setCountdown(15);
       return;
     }
     
@@ -91,6 +101,7 @@ function ExpensesPage() {
     setRecentClearId(newClear.id);
     setConfirmState("none");
     setClearAmountInput("");
+    setCountdown(0);
   };
 
   const undoClear = () => {
@@ -153,13 +164,24 @@ function ExpensesPage() {
                 </button>
               </div>
             ) : confirmState !== "none" ? (
-              <div className="flex items-center justify-between gap-3 bg-coral/10 p-3 rounded-md border border-coral/20">
-                <div className="flex items-center gap-2 text-coral text-sm font-semibold">
-                  <ShieldAlert className="size-4" /> Are you sure you want to clear?
+              <div className="flex flex-col items-center gap-4 bg-white/5 p-4 rounded-md border border-white/10">
+                <div className="text-ice text-sm font-semibold">
+                  Scan to Pay {inr(confirmState === "full" ? upiBalance : parseFloat(clearAmountInput))}
                 </div>
-                <div className="flex items-center gap-2">
-                  <button onClick={() => setConfirmState("none")} className="px-3 py-1.5 rounded-md bg-white/5 text-ice/70 text-xs font-semibold hover:bg-white/10">Cancel</button>
-                  <button onClick={() => handleClear(confirmState === "full")} className="px-3 py-1.5 rounded-md bg-coral text-ink text-xs font-bold hover:bg-coral/90">Confirm</button>
+                <div className="bg-white p-2 rounded-lg">
+                  <img src="/payment%20QR.jpeg" alt="Payment QR Code" className="size-48 object-contain" />
+                </div>
+                <div className="flex items-center gap-2 w-full justify-center">
+                  <button onClick={() => { setConfirmState("none"); setCountdown(0); }} className="px-4 py-2 rounded-md bg-white/5 text-ice/70 text-xs font-semibold hover:bg-white/10">
+                    Cancel
+                  </button>
+                  <button 
+                    onClick={() => handleClear(confirmState === "full")} 
+                    disabled={countdown > 0}
+                    className="px-4 py-2 rounded-md bg-mint text-ink text-xs font-bold hover:bg-mint/90 disabled:opacity-50 disabled:cursor-not-allowed w-32 flex justify-center"
+                  >
+                    {countdown > 0 ? `Wait (${countdown}s)` : "Done"}
+                  </button>
                 </div>
               </div>
             ) : (

@@ -50,6 +50,7 @@ function Dashboard() {
 
   const now = new Date();
   const today = (now.getDay() + 6) % 7; // Mon=0
+  const currentTime = now.toTimeString().slice(0, 5);
   const todayKey = toDateKey(now);
   const todayExams = examsOn(exams, todayKey);
   const dateLabel = hydrated
@@ -58,7 +59,7 @@ function Dashboard() {
 
   const subjectById = Object.fromEntries(subjects.map((s) => [s.id, s]));
   const todaysClasses = timetable
-    .filter((c) => c.day === today)
+    .filter((c) => c.day === today && c.end > currentTime)
     .sort((a, b) => a.start.localeCompare(b.start));
 
   const pending = assignments.filter((a) => !a.done);
@@ -193,10 +194,15 @@ function Dashboard() {
                   <p className="font-mono text-[9px] text-ice/40 text-center mb-1">{DAYS[d]}</p>
                   {timetable
                     .filter((c) => c.day === d)
+                    .filter((c) => {
+                      if (c.day < today) return false;
+                      if (c.day === today && c.end <= currentTime) return false;
+                      return true;
+                    })
                     .sort((a, b) => a.start.localeCompare(b.start))
                     .map((c) => {
                       const subj = subjectById[c.subjectId];
-                      return <div key={c.id} title={subj?.name} className={`h-6 rounded ${subj ? colorBar[subj.color] : "bg-white/20"}`} />;
+                      return <div key={c.id} title={`${subj?.name ?? "Unknown"} (${c.start} - ${c.end})`} className={`h-6 rounded ${subj ? colorBar[subj.color] : "bg-white/20"}`} />;
                     })}
                 </div>
               ))}
