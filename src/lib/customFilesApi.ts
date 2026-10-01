@@ -43,7 +43,7 @@ export const saveCustomFile = createServerFn({ method: "POST" })
     fs.writeFileSync(filePath, content, "utf-8");
 
     // Run git commands
-    await execAsync("git add src/custom-files");
+    await execAsync("git add .");
     await execAsync(`git commit -m "Auto update custom file: ${filename}"`);
     await execAsync("git push");
 
@@ -67,7 +67,7 @@ export const deleteCustomFile = createServerFn({ method: "POST" })
       fs.unlinkSync(filePath);
       
       // Run git commands
-      await execAsync("git add src/custom-files");
+      await execAsync("git add .");
       await execAsync(`git commit -m "Auto delete custom file: ${filename}"`);
       await execAsync("git push");
     }
