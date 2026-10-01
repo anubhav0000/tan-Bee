@@ -14,12 +14,12 @@ import { Route as AboutRouteImport } from './routes/about'
 import { Route as AiChatRouteImport } from './routes/ai-chat'
 import { Route as AssignmentsRouteImport } from './routes/assignments'
 import { Route as AttendanceRouteImport } from './routes/attendance'
+import { Route as CustomProgramsRouteImport } from './routes/custom-programs'
 import { Route as ExamsRouteImport } from './routes/exams'
 import { Route as ExpensesRouteImport } from './routes/expenses'
 import { Route as HealthRouteImport } from './routes/health'
 import { Route as HolidaysRouteImport } from './routes/holidays'
 import { Route as NotesRouteImport } from './routes/notes'
-import { Route as ProgramsRouteImport } from './routes/programs'
 import { Route as ProjectsRouteImport } from './routes/projects'
 import { Route as QrRouteImport } from './routes/qr'
 import { Route as SettingsRouteImport } from './routes/settings'
@@ -52,6 +52,11 @@ const AttendanceRoute = AttendanceRouteImport.update({
   path: '/attendance',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CustomProgramsRoute = CustomProgramsRouteImport.update({
+  id: '/custom-programs',
+  path: '/custom-programs',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ExamsRoute = ExamsRouteImport.update({
   id: '/exams',
   path: '/exams',
@@ -75,11 +80,6 @@ const HolidaysRoute = HolidaysRouteImport.update({
 const NotesRoute = NotesRouteImport.update({
   id: '/notes',
   path: '/notes',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ProgramsRoute = ProgramsRouteImport.update({
-  id: '/programs',
-  path: '/programs',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProjectsRoute = ProjectsRouteImport.update({
@@ -119,12 +119,12 @@ export interface FileRoutesByFullPath {
   '/ai-chat': typeof AiChatRoute
   '/assignments': typeof AssignmentsRoute
   '/attendance': typeof AttendanceRoute
+  '/custom-programs': typeof CustomProgramsRoute
   '/exams': typeof ExamsRoute
   '/expenses': typeof ExpensesRoute
   '/health': typeof HealthRoute
   '/holidays': typeof HolidaysRoute
   '/notes': typeof NotesRoute
-  '/programs': typeof ProgramsRoute
   '/projects': typeof ProjectsRoute
   '/qr': typeof QrRoute
   '/settings': typeof SettingsRoute
@@ -138,12 +138,12 @@ export interface FileRoutesByTo {
   '/ai-chat': typeof AiChatRoute
   '/assignments': typeof AssignmentsRoute
   '/attendance': typeof AttendanceRoute
+  '/custom-programs': typeof CustomProgramsRoute
   '/exams': typeof ExamsRoute
   '/expenses': typeof ExpensesRoute
   '/health': typeof HealthRoute
   '/holidays': typeof HolidaysRoute
   '/notes': typeof NotesRoute
-  '/programs': typeof ProgramsRoute
   '/projects': typeof ProjectsRoute
   '/qr': typeof QrRoute
   '/settings': typeof SettingsRoute
@@ -158,12 +158,12 @@ export interface FileRoutesById {
   '/ai-chat': typeof AiChatRoute
   '/assignments': typeof AssignmentsRoute
   '/attendance': typeof AttendanceRoute
+  '/custom-programs': typeof CustomProgramsRoute
   '/exams': typeof ExamsRoute
   '/expenses': typeof ExpensesRoute
   '/health': typeof HealthRoute
   '/holidays': typeof HolidaysRoute
   '/notes': typeof NotesRoute
-  '/programs': typeof ProgramsRoute
   '/projects': typeof ProjectsRoute
   '/qr': typeof QrRoute
   '/settings': typeof SettingsRoute
@@ -179,12 +179,12 @@ export interface FileRouteTypes {
     | '/ai-chat'
     | '/assignments'
     | '/attendance'
+    | '/custom-programs'
     | '/exams'
     | '/expenses'
     | '/health'
     | '/holidays'
     | '/notes'
-    | '/programs'
     | '/projects'
     | '/qr'
     | '/settings'
@@ -198,12 +198,12 @@ export interface FileRouteTypes {
     | '/ai-chat'
     | '/assignments'
     | '/attendance'
+    | '/custom-programs'
     | '/exams'
     | '/expenses'
     | '/health'
     | '/holidays'
     | '/notes'
-    | '/programs'
     | '/projects'
     | '/qr'
     | '/settings'
@@ -217,12 +217,12 @@ export interface FileRouteTypes {
     | '/ai-chat'
     | '/assignments'
     | '/attendance'
+    | '/custom-programs'
     | '/exams'
     | '/expenses'
     | '/health'
     | '/holidays'
     | '/notes'
-    | '/programs'
     | '/projects'
     | '/qr'
     | '/settings'
@@ -237,12 +237,12 @@ export interface RootRouteChildren {
   AiChatRoute: typeof AiChatRoute
   AssignmentsRoute: typeof AssignmentsRoute
   AttendanceRoute: typeof AttendanceRoute
+  CustomProgramsRoute: typeof CustomProgramsRoute
   ExamsRoute: typeof ExamsRoute
   ExpensesRoute: typeof ExpensesRoute
   HealthRoute: typeof HealthRoute
   HolidaysRoute: typeof HolidaysRoute
   NotesRoute: typeof NotesRoute
-  ProgramsRoute: typeof ProgramsRoute
   ProjectsRoute: typeof ProjectsRoute
   QrRoute: typeof QrRoute
   SettingsRoute: typeof SettingsRoute
@@ -288,6 +288,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AttendanceRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/custom-programs': {
+      id: '/custom-programs'
+      path: '/custom-programs'
+      fullPath: '/custom-programs'
+      preLoaderRoute: typeof CustomProgramsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/exams': {
       id: '/exams'
       path: '/exams'
@@ -321,13 +328,6 @@ declare module '@tanstack/react-router' {
       path: '/notes'
       fullPath: '/notes'
       preLoaderRoute: typeof NotesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/programs': {
-      id: '/programs'
-      path: '/programs'
-      fullPath: '/programs'
-      preLoaderRoute: typeof ProgramsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/projects': {
@@ -381,12 +381,12 @@ const rootRouteChildren: RootRouteChildren = {
   AiChatRoute: AiChatRoute,
   AssignmentsRoute: AssignmentsRoute,
   AttendanceRoute: AttendanceRoute,
+  CustomProgramsRoute: CustomProgramsRoute,
   ExamsRoute: ExamsRoute,
   ExpensesRoute: ExpensesRoute,
   HealthRoute: HealthRoute,
   HolidaysRoute: HolidaysRoute,
   NotesRoute: NotesRoute,
-  ProgramsRoute: ProgramsRoute,
   ProjectsRoute: ProjectsRoute,
   QrRoute: QrRoute,
   SettingsRoute: SettingsRoute,

@@ -1,9 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Settings, BookOpen, Activity, Lock, Unlock, Code, Loader2, Trash2 } from "lucide-react";
 import { useLocalStorage } from "@/lib/store";
-import { useState } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { getCustomFiles, saveCustomFile, deleteCustomFile } from "@/lib/customFilesApi";
+import { useState, useEffect } from "react";
+import { addCustomFile, deleteCustomFile, getCustomFiles } from "@/lib/custom-files";
 
 export const Route = createFileRoute("/settings")({
   head: () => ({
@@ -24,14 +23,18 @@ function SettingsPage() {
   const [filename, setFilename] = useState("");
   const [codeText, setCodeText] = useState("");
   const [isUpdating, setIsUpdating] = useState(false);
-  
-  const queryClient = useQueryClient();
+  const [files, setFiles] = useState<{ filename: string; content: string }[]>([]);
 
-  const { data: files = [] } = useQuery({
-    queryKey: ["custom-files"],
-    queryFn: async () => await getCustomFiles(),
-    enabled: isUnlocked,
-  });
+  useEffect(() => {
+    if (isUnlocked) {
+      loadFiles();
+    }
+  }, [isUnlocked]);
+
+  const loadFiles = async () => {
+    const data = await getCustomFiles();
+    setFiles(data);
+  };
 
   const handleUnlock = () => {
     if (devPassword === "020526") {
@@ -43,37 +46,36 @@ function SettingsPage() {
   };
 
   const handleUpdate = async () => {
-    if (!codeText.trim() || !filename.trim()) return;
+    if (!filename.trim() || !codeText.trim()) return;
     setIsUpdating(true);
     try {
-      await saveCustomFile({ data: { filename: filename.trim(), content: codeText } });
-      alert("Successfully added and updated GitHub!");
-      setCodeText("");
+      await addCustomFile({ data: { filename: filename.trim(), content: codeText } });
+      alert("Successfully updated GitHub and Netlify!");
       setFilename("");
-      queryClient.invalidateQueries({ queryKey: ["custom-files"] });
+      setCodeText("");
+      await loadFiles();
     } catch (error) {
       console.error(error);
-      alert("Failed to update GitHub");
+      alert("Failed to update");
     } finally {
       setIsUpdating(false);
     }
   };
 
-  const handleDelete = async (deleteFilename: string) => {
-    if (confirm(`Are you sure you want to delete ${deleteFilename}? This will remove it from GitHub as well.`)) {
-      try {
-        await deleteCustomFile({ data: { filename: deleteFilename } });
-        alert(`Deleted ${deleteFilename}`);
-        queryClient.invalidateQueries({ queryKey: ["custom-files"] });
-      } catch (error) {
-        console.error(error);
-        alert("Failed to delete file from GitHub");
-      }
+  const handleDelete = async (fileToDelete: string) => {
+    if (!confirm(`Are you sure you want to delete ${fileToDelete}?`)) return;
+    try {
+      await deleteCustomFile({ data: fileToDelete });
+      alert("Successfully deleted from GitHub and Netlify!");
+      await loadFiles();
+    } catch (error) {
+      console.error(error);
+      alert("Failed to delete");
     }
   };
 
   return (
-    <div className="max-w-2xl mx-auto">
+    <div className="max-w-2xl mx-auto pb-12">
       <p className="font-mono text-[10px] tracking-[0.25em] text-ice/50 mb-2">// PREFERENCES</p>
       <h1 className="font-display text-4xl sm:text-5xl text-ice leading-[0.9] mb-7">Settings</h1>
 
@@ -146,59 +148,60 @@ function SettingsPage() {
           </div>
         ) : (
           <div className="space-y-6">
-            {files.length > 0 && (
-              <div className="space-y-3">
-                <p className="text-sm font-medium text-ice/80">Manage Existing Files</p>
+            <div className="space-y-4">
+              <h3 className="text-sm font-medium text-ice/80 uppercase tracking-wider">Add New File</h3>
+              <div className="p-4 rounded-xl border border-white/10 bg-white/5 space-y-4">
+                <input
+                  type="text"
+                  value={filename}
+                  onChange={(e) => setFilename(e.target.value)}
+                  placeholder="Filename (e.g. program.txt)"
+                  className="w-full bg-black/20 border border-white/10 rounded-lg p-3 text-ice text-sm outline-none focus:border-mint/50 transition-colors"
+                />
+                <textarea
+                  value={codeText}
+                  onChange={(e) => setCodeText(e.target.value)}
+                  placeholder="Paste your code here in text format..."
+                  className="w-full h-40 bg-black/20 border border-white/10 rounded-lg p-3 text-ice font-mono text-sm resize-y outline-none focus:border-mint/50 transition-colors"
+                />
+              </div>
+              <button
+                onClick={handleUpdate}
+                disabled={isUpdating || !codeText.trim() || !filename.trim()}
+                className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-mint text-dark font-semibold hover:bg-mint/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isUpdating ? (
+                  <>
+                    <Loader2 className="size-5 animate-spin" />
+                    Updating Netlify & GitHub...
+                  </>
+                ) : (
+                  "Update & Deploy"
+                )}
+              </button>
+            </div>
+
+            <div className="space-y-4 pt-6 border-t border-white/10">
+              <h3 className="text-sm font-medium text-ice/80 uppercase tracking-wider">Manage Files</h3>
+              {files.length === 0 ? (
+                <p className="text-ice/40 text-sm italic">No custom files found.</p>
+              ) : (
                 <div className="space-y-2">
-                  {files.map((f) => (
-                    <div key={f.name} className="flex items-center justify-between p-3 rounded-lg border border-white/10 bg-white/5">
-                      <span className="text-sm font-mono text-ice">{f.name}</span>
-                      <button 
-                        onClick={() => handleDelete(f.name)}
-                        className="p-1.5 text-rose hover:bg-rose/20 rounded-md transition-colors"
-                        title="Delete file"
+                  {files.map((file) => (
+                    <div key={file.filename} className="flex items-center justify-between p-3 rounded-lg bg-white/5 border border-white/10">
+                      <span className="text-ice font-mono text-sm">{file.filename}</span>
+                      <button
+                        onClick={() => handleDelete(file.filename)}
+                        className="p-2 text-rose hover:bg-rose/10 rounded-md transition-colors"
+                        title="Delete File"
                       >
                         <Trash2 className="size-4" />
                       </button>
                     </div>
                   ))}
                 </div>
-              </div>
-            )}
-            
-            <div className="p-4 rounded-xl border border-white/10 bg-white/5 space-y-4">
-              <div className="flex gap-2 items-center text-ice/80">
-                <Code className="size-4" />
-                <span className="text-sm font-medium">Add New File to GitHub</span>
-              </div>
-              <input
-                type="text"
-                value={filename}
-                onChange={(e) => setFilename(e.target.value)}
-                placeholder="Filename (e.g. program.js)"
-                className="w-full bg-black/20 border border-white/10 rounded-lg p-3 text-ice font-mono text-sm outline-none focus:border-mint/50 transition-colors"
-              />
-              <textarea
-                value={codeText}
-                onChange={(e) => setCodeText(e.target.value)}
-                placeholder="Paste your code here in text format..."
-                className="w-full h-40 bg-black/20 border border-white/10 rounded-lg p-3 text-ice font-mono text-sm resize-y outline-none focus:border-mint/50 transition-colors"
-              />
-            </div>
-            <button
-              onClick={handleUpdate}
-              disabled={isUpdating || !codeText.trim() || !filename.trim()}
-              className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-mint text-dark font-semibold hover:bg-mint/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {isUpdating ? (
-                <>
-                  <Loader2 className="size-5 animate-spin" />
-                  Updating GitHub...
-                </>
-              ) : (
-                "Save & Update GitHub"
               )}
-            </button>
+            </div>
           </div>
         )}
       </div>
