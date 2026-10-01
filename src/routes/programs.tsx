@@ -14,10 +14,14 @@ export const Route = createFileRoute("/programs")({
 });
 
 function ProgramsPage() {
-  const { data: files = [], isLoading } = useQuery({
-    queryKey: ["custom-files"],
-    queryFn: async () => await getCustomFiles(),
+  const modules = import.meta.glob('../custom-files/*', { query: '?raw', import: 'default', eager: true });
+  
+  const files = Object.entries(modules).map(([path, content]) => {
+    const name = path.split('/').pop() || path;
+    return { name, content: content as string };
   });
+
+  const isLoading = false;
 
   return (
     <div className="max-w-4xl mx-auto">
