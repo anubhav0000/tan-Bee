@@ -3,6 +3,7 @@ import { useState } from "react";
 import {
   useLocalStorage,
   useHydrated,
+  useCurrentTime,
   SEED_SUBJECTS,
   SEED_ASSIGNMENTS,
   SEED_TIMETABLE,
@@ -48,7 +49,9 @@ function Dashboard() {
   const [userName] = useLocalStorage<string>("sh_user_name", "");
   const hydrated = useHydrated();
 
-  const now = new Date();
+  const now = useCurrentTime();
+  const totalCurrentMinutes = now.getHours() * 60 + now.getMinutes();
+  const totalCurrentSeconds = totalCurrentMinutes * 60 + now.getSeconds();
   const today = (now.getDay() + 6) % 7; // Mon=0
   const currentTime = now.toTimeString().slice(0, 5);
   const todayKey = toDateKey(now);
@@ -59,7 +62,12 @@ function Dashboard() {
 
   const subjectById = Object.fromEntries(subjects.map((s) => [s.id, s]));
   const todaysClasses = timetable
-    .filter((c) => c.day === today && c.end > currentTime)
+    .filter((c) => {
+      if (c.day !== today) return false;
+      const [sh, sm] = c.start.split(":").map(Number);
+      const endTotal = sh * 60 + sm + 50;
+      return endTotal > totalCurrentMinutes;
+    })
     .sort((a, b) => a.start.localeCompare(b.start));
 
   const pending = assignments.filter((a) => !a.done);
@@ -85,6 +93,23 @@ function Dashboard() {
     ? Math.max(1, Math.round((new Date(nextExam.date).getTime() - now.getTime()) / 3600000))
     : null;
 
+  const ongoingClass = todaysClasses.find((c) => {
+    const [sh, sm] = c.start.split(":").map(Number);
+    const startTotalSeconds = (sh * 60 + sm) * 60;
+    const endTotalSeconds = startTotalSeconds + 50 * 60;
+    return totalCurrentSeconds >= startTotalSeconds && totalCurrentSeconds < endTotalSeconds;
+  });
+
+  let ongoingTimeLeft = null;
+  if (ongoingClass) {
+    const [sh, sm] = ongoingClass.start.split(":").map(Number);
+    const endTotalSeconds = (sh * 60 + sm) * 60 + 50 * 60;
+    const secondsLeft = endTotalSeconds - totalCurrentSeconds;
+    const mLeft = Math.floor(secondsLeft / 60);
+    const sLeft = String(secondsLeft % 60).padStart(2, "0");
+    ongoingTimeLeft = `${mLeft}m ${sLeft}s left`;
+  }
+
   return (
     <div>
       <header className="flex flex-wrap items-end justify-between gap-4 mb-7 animate-rise">
@@ -99,6 +124,27 @@ function Dashboard() {
           </p>
         </div>
       </header>
+
+      {ongoingClass && (
+        <div className="mb-7 glass-card p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-coral/20 bg-coral/[0.04] animate-rise relative overflow-hidden">
+          <div className="absolute top-0 left-0 w-1 h-full bg-coral shadow-[0_0_15px_rgba(var(--coral),0.5)] animate-pulse" />
+          <div>
+            <p className="font-mono text-[10px] tracking-[0.2em] text-coral mb-2 flex items-center gap-2">
+              <span className="size-1.5 rounded-full bg-coral animate-ping" /> ONGOING CLASS
+            </p>
+            <h2 className="font-display text-2xl sm:text-3xl text-ice">{subjectById[ongoingClass.subjectId]?.name ?? "Unknown"}</h2>
+            <p className="text-sm text-ice/60 mt-1">
+              {ongoingClass.start} · Room {ongoingClass.room}
+            </p>
+          </div>
+          <div className="text-left sm:text-right glass-card px-5 py-3 bg-black/20 border-white/5 min-w-[140px] w-full sm:w-auto">
+            <p className="font-mono text-[10px] text-ice/40 mb-1">TIME REMAINING</p>
+            <p className="font-mono text-2xl font-bold text-coral tabular-nums">
+              {ongoingTimeLeft}
+            </p>
+          </div>
+        </div>
+      )}
 
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-12 gap-4">
         <Link to="/assignments" className="xl:col-span-3 glass-card p-5 block hover:bg-white/[0.07] transition-colors animate-rise [animation-delay:60ms]">
@@ -169,12 +215,28 @@ function Dashboard() {
             <div className="space-y-1">
               {todaysClasses.map((c) => {
                 const subj = subjectById[c.subjectId];
+                const [sh, sm] = c.start.split(":").map(Number);
+                const startTotalSeconds = (sh * 60 + sm) * 60;
+                const endTotalSeconds = startTotalSeconds + 50 * 60;
+                let timeLeftMsg = null;
+                if (totalCurrentSeconds >= startTotalSeconds && totalCurrentSeconds < endTotalSeconds) {
+                  const secondsLeft = endTotalSeconds - totalCurrentSeconds;
+                  const mLeft = Math.floor(secondsLeft / 60);
+                  const sLeft = String(secondsLeft % 60).padStart(2, "0");
+                  timeLeftMsg = `${mLeft}m ${sLeft}s left`;
+                }
+
                 return (
-                  <div key={c.id} className="flex items-center gap-4 rounded-lg px-3 py-2.5 bg-white/[0.03] hover:bg-white/[0.07] transition-colors">
-                    <span className={`size-2 rounded-full ${subj ? colorDot[subj.color] : "bg-ice/30"}`} />
-                    <span className="font-mono text-[11px] text-ice/50 w-14">{c.start}</span>
-                    <span className="text-sm font-medium text-ice">{subj?.name ?? "Unknown"}</span>
-                    <span className="ml-auto text-xs text-ice/40">{c.room}</span>
+                  <div key={c.id} className="flex items-center gap-3 sm:gap-4 rounded-lg px-3 py-2.5 bg-white/[0.03] hover:bg-white/[0.07] transition-colors relative">
+                    <span className={`size-2 shrink-0 rounded-full ${subj ? colorDot[subj.color] : "bg-ice/30"}`} />
+                    <span className="font-mono text-[11px] text-ice/50 shrink-0 w-12 sm:w-14">{c.start}</span>
+                    <span className="text-sm font-medium text-ice truncate">{subj?.name ?? "Unknown"}</span>
+                    {timeLeftMsg && (
+                      <span className="shrink-0 inline-block px-1.5 py-0.5 rounded bg-coral/10 border border-coral/20 text-[9px] font-bold text-coral ml-1 sm:ml-2 animate-pulse">
+                        {timeLeftMsg}
+                      </span>
+                    )}
+                    <span className="ml-auto text-xs text-ice/40 shrink-0">{c.room}</span>
                   </div>
                 );
               })}
@@ -196,7 +258,11 @@ function Dashboard() {
                     .filter((c) => c.day === d)
                     .filter((c) => {
                       if (c.day < today) return false;
-                      if (c.day === today && c.end <= currentTime) return false;
+                      if (c.day === today) {
+                        const [sh, sm] = c.start.split(":").map(Number);
+                        const endTotal = sh * 60 + sm + 50;
+                        if (endTotal <= totalCurrentMinutes) return false;
+                      }
                       return true;
                     })
                     .sort((a, b) => a.start.localeCompare(b.start))

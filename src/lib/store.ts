@@ -1,5 +1,14 @@
 import { useEffect, useRef, useState } from "react";
 
+export function useCurrentTime() {
+  const [now, setNow] = useState(new Date());
+  useEffect(() => {
+    const timer = setInterval(() => setNow(new Date()), 1000);
+    return () => clearInterval(timer);
+  }, []);
+  return now;
+}
+
 export type SubjectColor =
   | "sky"
   | "coral"
@@ -93,12 +102,53 @@ export function uid() {
   return Math.random().toString(36).slice(2, 10);
 }
 
+function smartMerge(parsed: any, initial: any): any {
+  if (Array.isArray(parsed) && Array.isArray(initial)) {
+    const hasId = (arr: any[]) => arr.length > 0 && arr[0] && typeof arr[0].id !== "undefined";
+    if (hasId(parsed) || hasId(initial)) {
+      const parsedMap = new Map(parsed.map((item: any) => [item?.id, item]));
+      const result = [...parsed];
+      for (const initItem of initial) {
+        if (!initItem || typeof initItem.id === "undefined") continue;
+        if (parsedMap.has(initItem.id)) {
+           const existing = parsedMap.get(initItem.id);
+           const merged = smartMerge(existing, initItem);
+           const idx = result.findIndex((r) => r?.id === initItem.id);
+           if (idx !== -1) result[idx] = merged;
+        } else {
+           result.push(initItem);
+        }
+      }
+      return result;
+    }
+    return parsed;
+  }
+  
+  if (typeof parsed === "object" && parsed !== null && typeof initial === "object" && initial !== null) {
+    const merged = { ...parsed };
+    for (const key in initial) {
+      if (!(key in parsed)) {
+        merged[key] = initial[key];
+      } else {
+        merged[key] = smartMerge(parsed[key], initial[key]);
+      }
+    }
+    return merged;
+  }
+  
+  return parsed;
+}
+
 /** Hydration-safe localStorage state for SPA */
 export function useLocalStorage<T>(key: string, initial: T) {
   const [value, setValue] = useState<T>(() => {
     try {
       const raw = window.localStorage.getItem(key);
-      return raw ? (JSON.parse(raw) as T) : initial;
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        return smartMerge(parsed, initial) as T;
+      }
+      return initial;
     } catch {
       return initial;
     }

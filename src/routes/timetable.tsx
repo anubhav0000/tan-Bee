@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Plus, Trash2 } from "lucide-react";
 import {
   useLocalStorage,
+  useCurrentTime,
   SEED_SUBJECTS,
   SEED_TIMETABLE,
   uid,
@@ -11,6 +12,7 @@ import {
   type Subject,
   type ClassSlot,
 } from "@/lib/store";
+
 
 export const Route = createFileRoute("/timetable")({
   head: () => ({
@@ -32,6 +34,11 @@ function TimetablePage() {
   const [start, setStart] = useState("09:00");
   const [room, setRoom] = useState("");
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
+
+  const now = useCurrentTime();
+  const currentDay = (now.getDay() + 6) % 7;
+  const totalCurrentMinutes = now.getHours() * 60 + now.getMinutes();
+  const totalCurrentSeconds = totalCurrentMinutes * 60 + now.getSeconds();
 
   useEffect(() => {
     if (!confirmDeleteId) return;
@@ -107,12 +114,29 @@ function TimetablePage() {
                   .sort((a, b) => a.start.localeCompare(b.start))
                   .map((c) => {
                     const subj = subjectById[c.subjectId];
+                    let timeLeftMsg = null;
+                    if (c.day === currentDay) {
+                      const [sh, sm] = c.start.split(":").map(Number);
+                      const startTotalSeconds = (sh * 60 + sm) * 60;
+                      const endTotalSeconds = startTotalSeconds + 50 * 60; // every class is 50 minutes
+                      if (totalCurrentSeconds >= startTotalSeconds && totalCurrentSeconds < endTotalSeconds) {
+                        const secondsLeft = endTotalSeconds - totalCurrentSeconds;
+                        const mLeft = Math.floor(secondsLeft / 60);
+                        const sLeft = String(secondsLeft % 60).padStart(2, "0");
+                        timeLeftMsg = `${mLeft}m ${sLeft}s left`;
+                      }
+                    }
                     return (
                       <div key={c.id} className={`group relative rounded-lg px-2 py-1.5 ${subj ? colorBar[subj.color] : "bg-white/20"}`}>
                         <p className="text-[11px] font-semibold text-ink leading-tight truncate">{subj?.name ?? "?"}</p>
                         <p className="font-mono text-[9px] text-ink/70">
                           {c.start} · {c.room}
                         </p>
+                        {timeLeftMsg && (
+                          <span className="mt-1 inline-block px-1.5 py-0.5 rounded bg-coral/20 border border-coral/30 text-[9px] font-bold text-coral animate-pulse">
+                            {timeLeftMsg}
+                          </span>
+                        )}
                         {confirmDeleteId === c.id ? (
                           <button
                             onClick={() => setSlots(slots.filter((x) => x.id !== c.id))}
