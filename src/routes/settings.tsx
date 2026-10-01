@@ -1,27 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Settings, BookOpen, Activity, Lock, Unlock, Code, Loader2 } from "lucide-react";
+import { Settings, BookOpen, Activity, Lock, Unlock, Code, Loader2, Trash2 } from "lucide-react";
 import { useLocalStorage } from "@/lib/store";
 import { useState } from "react";
-import { createServerFn } from "@tanstack/react-start";
-
-const updateGithub = createServerFn({ method: "POST" })
-  .validator((code: string) => code)
-  .handler(async ({ data: code }) => {
-    const { exec } = await import("child_process");
-    const { promisify } = await import("util");
-    const fs = await import("fs");
-    const execAsync = promisify(exec);
-    
-    // Write code to a file so it can be committed
-    fs.writeFileSync("src/custom-program.txt", code);
-    
-    // Run git commands
-    await execAsync("git add .");
-    await execAsync('git commit -m "Auto update code from developer section"');
-    await execAsync("git push");
-    
-    return { success: true };
-  });
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { getCustomFiles, saveCustomFile, deleteCustomFile } from "@/lib/customFilesApi";
 
 export const Route = createFileRoute("/settings")({
   head: () => ({
@@ -39,8 +21,17 @@ function SettingsPage() {
 
   const [devPassword, setDevPassword] = useState("");
   const [isUnlocked, setIsUnlocked] = useState(false);
+  const [filename, setFilename] = useState("");
   const [codeText, setCodeText] = useState("");
   const [isUpdating, setIsUpdating] = useState(false);
+  
+  const queryClient = useQueryClient();
+
+  const { data: files = [] } = useQuery({
+    queryKey: ["custom-files"],
+    queryFn: async () => await getCustomFiles(),
+    enabled: isUnlocked,
+  });
 
   const handleUnlock = () => {
     if (devPassword === "020526") {
@@ -52,17 +43,32 @@ function SettingsPage() {
   };
 
   const handleUpdate = async () => {
-    if (!codeText.trim()) return;
+    if (!codeText.trim() || !filename.trim()) return;
     setIsUpdating(true);
     try {
-      await updateGithub({ data: codeText });
-      alert("Successfully updated GitHub!");
+      await saveCustomFile({ data: { filename: filename.trim(), content: codeText } });
+      alert("Successfully added and updated GitHub!");
       setCodeText("");
+      setFilename("");
+      queryClient.invalidateQueries({ queryKey: ["custom-files"] });
     } catch (error) {
       console.error(error);
       alert("Failed to update GitHub");
     } finally {
       setIsUpdating(false);
+    }
+  };
+
+  const handleDelete = async (deleteFilename: string) => {
+    if (confirm(`Are you sure you want to delete ${deleteFilename}? This will remove it from GitHub as well.`)) {
+      try {
+        await deleteCustomFile({ data: { filename: deleteFilename } });
+        alert(`Deleted ${deleteFilename}`);
+        queryClient.invalidateQueries({ queryKey: ["custom-files"] });
+      } catch (error) {
+        console.error(error);
+        alert("Failed to delete file from GitHub");
+      }
     }
   };
 
@@ -139,12 +145,39 @@ function SettingsPage() {
             </button>
           </div>
         ) : (
-          <div className="space-y-4">
-            <div className="p-4 rounded-xl border border-white/10 bg-white/5">
-              <div className="flex gap-2 mb-3 items-center text-ice/80">
-                <Code className="size-4" />
-                <span className="text-sm font-medium">Add Code to Push to GitHub</span>
+          <div className="space-y-6">
+            {files.length > 0 && (
+              <div className="space-y-3">
+                <p className="text-sm font-medium text-ice/80">Manage Existing Files</p>
+                <div className="space-y-2">
+                  {files.map((f) => (
+                    <div key={f.name} className="flex items-center justify-between p-3 rounded-lg border border-white/10 bg-white/5">
+                      <span className="text-sm font-mono text-ice">{f.name}</span>
+                      <button 
+                        onClick={() => handleDelete(f.name)}
+                        className="p-1.5 text-rose hover:bg-rose/20 rounded-md transition-colors"
+                        title="Delete file"
+                      >
+                        <Trash2 className="size-4" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
               </div>
+            )}
+            
+            <div className="p-4 rounded-xl border border-white/10 bg-white/5 space-y-4">
+              <div className="flex gap-2 items-center text-ice/80">
+                <Code className="size-4" />
+                <span className="text-sm font-medium">Add New File to GitHub</span>
+              </div>
+              <input
+                type="text"
+                value={filename}
+                onChange={(e) => setFilename(e.target.value)}
+                placeholder="Filename (e.g. program.js)"
+                className="w-full bg-black/20 border border-white/10 rounded-lg p-3 text-ice font-mono text-sm outline-none focus:border-mint/50 transition-colors"
+              />
               <textarea
                 value={codeText}
                 onChange={(e) => setCodeText(e.target.value)}
@@ -154,7 +187,7 @@ function SettingsPage() {
             </div>
             <button
               onClick={handleUpdate}
-              disabled={isUpdating || !codeText.trim()}
+              disabled={isUpdating || !codeText.trim() || !filename.trim()}
               className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-mint text-dark font-semibold hover:bg-mint/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isUpdating ? (
@@ -163,7 +196,7 @@ function SettingsPage() {
                   Updating GitHub...
                 </>
               ) : (
-                "Update GitHub"
+                "Save & Update GitHub"
               )}
             </button>
           </div>

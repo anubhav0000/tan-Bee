@@ -19,6 +19,7 @@ import { Route as ExpensesRouteImport } from './routes/expenses'
 import { Route as HealthRouteImport } from './routes/health'
 import { Route as HolidaysRouteImport } from './routes/holidays'
 import { Route as NotesRouteImport } from './routes/notes'
+import { Route as ProgramsRouteImport } from './routes/programs'
 import { Route as ProjectsRouteImport } from './routes/projects'
 import { Route as QrRouteImport } from './routes/qr'
 import { Route as SettingsRouteImport } from './routes/settings'
@@ -76,6 +77,11 @@ const NotesRoute = NotesRouteImport.update({
   path: '/notes',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ProgramsRoute = ProgramsRouteImport.update({
+  id: '/programs',
+  path: '/programs',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ProjectsRoute = ProjectsRouteImport.update({
   id: '/projects',
   path: '/projects',
@@ -118,6 +124,7 @@ export interface FileRoutesByFullPath {
   '/health': typeof HealthRoute
   '/holidays': typeof HolidaysRoute
   '/notes': typeof NotesRoute
+  '/programs': typeof ProgramsRoute
   '/projects': typeof ProjectsRoute
   '/qr': typeof QrRoute
   '/settings': typeof SettingsRoute
@@ -136,6 +143,7 @@ export interface FileRoutesByTo {
   '/health': typeof HealthRoute
   '/holidays': typeof HolidaysRoute
   '/notes': typeof NotesRoute
+  '/programs': typeof ProgramsRoute
   '/projects': typeof ProjectsRoute
   '/qr': typeof QrRoute
   '/settings': typeof SettingsRoute
@@ -155,6 +163,7 @@ export interface FileRoutesById {
   '/health': typeof HealthRoute
   '/holidays': typeof HolidaysRoute
   '/notes': typeof NotesRoute
+  '/programs': typeof ProgramsRoute
   '/projects': typeof ProjectsRoute
   '/qr': typeof QrRoute
   '/settings': typeof SettingsRoute
@@ -175,6 +184,7 @@ export interface FileRouteTypes {
     | '/health'
     | '/holidays'
     | '/notes'
+    | '/programs'
     | '/projects'
     | '/qr'
     | '/settings'
@@ -193,6 +203,7 @@ export interface FileRouteTypes {
     | '/health'
     | '/holidays'
     | '/notes'
+    | '/programs'
     | '/projects'
     | '/qr'
     | '/settings'
@@ -211,6 +222,7 @@ export interface FileRouteTypes {
     | '/health'
     | '/holidays'
     | '/notes'
+    | '/programs'
     | '/projects'
     | '/qr'
     | '/settings'
@@ -230,6 +242,7 @@ export interface RootRouteChildren {
   HealthRoute: typeof HealthRoute
   HolidaysRoute: typeof HolidaysRoute
   NotesRoute: typeof NotesRoute
+  ProgramsRoute: typeof ProgramsRoute
   ProjectsRoute: typeof ProjectsRoute
   QrRoute: typeof QrRoute
   SettingsRoute: typeof SettingsRoute
@@ -310,6 +323,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof NotesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/programs': {
+      id: '/programs'
+      path: '/programs'
+      fullPath: '/programs'
+      preLoaderRoute: typeof ProgramsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/projects': {
       id: '/projects'
       path: '/projects'
@@ -366,6 +386,7 @@ const rootRouteChildren: RootRouteChildren = {
   HealthRoute: HealthRoute,
   HolidaysRoute: HolidaysRoute,
   NotesRoute: NotesRoute,
+  ProgramsRoute: ProgramsRoute,
   ProjectsRoute: ProjectsRoute,
   QrRoute: QrRoute,
   SettingsRoute: SettingsRoute,
