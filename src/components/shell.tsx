@@ -20,7 +20,6 @@ import {
   Sparkles,
   Settings,
   Activity,
-  Code,
 } from "lucide-react";
 
 const NAV = [
@@ -37,7 +36,6 @@ const NAV = [
   { title: "AI Study Buddy", url: "/ai-chat", icon: Sparkles, dot: "bg-viol/80", requiresStudyMode: true },
   { title: "Stopwatch", url: "/stopwatch", icon: Timer, dot: "bg-rose/50", requiresStudyMode: true },
   { title: "Health & Wellness", url: "/health", icon: Activity, dot: "bg-rose", requiresHealthMode: true },
-  { title: "Custom Programs", url: "/custom-programs", icon: Code, dot: "bg-sky/40" },
   { title: "QR Generator", url: "/qr", icon: QrCode, dot: "bg-coral/50" },
   { title: "Settings", url: "/settings", icon: Settings, dot: "bg-ice/50" },
   { title: "About", url: "/about", icon: Info, dot: "bg-mint/80" },

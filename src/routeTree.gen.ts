@@ -14,7 +14,6 @@ import { Route as AboutRouteImport } from './routes/about'
 import { Route as AiChatRouteImport } from './routes/ai-chat'
 import { Route as AssignmentsRouteImport } from './routes/assignments'
 import { Route as AttendanceRouteImport } from './routes/attendance'
-import { Route as CustomProgramsRouteImport } from './routes/custom-programs'
 import { Route as ExamsRouteImport } from './routes/exams'
 import { Route as ExpensesRouteImport } from './routes/expenses'
 import { Route as HealthRouteImport } from './routes/health'
@@ -50,11 +49,6 @@ const AssignmentsRoute = AssignmentsRouteImport.update({
 const AttendanceRoute = AttendanceRouteImport.update({
   id: '/attendance',
   path: '/attendance',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const CustomProgramsRoute = CustomProgramsRouteImport.update({
-  id: '/custom-programs',
-  path: '/custom-programs',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ExamsRoute = ExamsRouteImport.update({
@@ -119,7 +113,6 @@ export interface FileRoutesByFullPath {
   '/ai-chat': typeof AiChatRoute
   '/assignments': typeof AssignmentsRoute
   '/attendance': typeof AttendanceRoute
-  '/custom-programs': typeof CustomProgramsRoute
   '/exams': typeof ExamsRoute
   '/expenses': typeof ExpensesRoute
   '/health': typeof HealthRoute
@@ -138,7 +131,6 @@ export interface FileRoutesByTo {
   '/ai-chat': typeof AiChatRoute
   '/assignments': typeof AssignmentsRoute
   '/attendance': typeof AttendanceRoute
-  '/custom-programs': typeof CustomProgramsRoute
   '/exams': typeof ExamsRoute
   '/expenses': typeof ExpensesRoute
   '/health': typeof HealthRoute
@@ -158,7 +150,6 @@ export interface FileRoutesById {
   '/ai-chat': typeof AiChatRoute
   '/assignments': typeof AssignmentsRoute
   '/attendance': typeof AttendanceRoute
-  '/custom-programs': typeof CustomProgramsRoute
   '/exams': typeof ExamsRoute
   '/expenses': typeof ExpensesRoute
   '/health': typeof HealthRoute
@@ -179,7 +170,6 @@ export interface FileRouteTypes {
     | '/ai-chat'
     | '/assignments'
     | '/attendance'
-    | '/custom-programs'
     | '/exams'
     | '/expenses'
     | '/health'
@@ -198,7 +188,6 @@ export interface FileRouteTypes {
     | '/ai-chat'
     | '/assignments'
     | '/attendance'
-    | '/custom-programs'
     | '/exams'
     | '/expenses'
     | '/health'
@@ -217,7 +206,6 @@ export interface FileRouteTypes {
     | '/ai-chat'
     | '/assignments'
     | '/attendance'
-    | '/custom-programs'
     | '/exams'
     | '/expenses'
     | '/health'
@@ -237,7 +225,6 @@ export interface RootRouteChildren {
   AiChatRoute: typeof AiChatRoute
   AssignmentsRoute: typeof AssignmentsRoute
   AttendanceRoute: typeof AttendanceRoute
-  CustomProgramsRoute: typeof CustomProgramsRoute
   ExamsRoute: typeof ExamsRoute
   ExpensesRoute: typeof ExpensesRoute
   HealthRoute: typeof HealthRoute
@@ -286,13 +273,6 @@ declare module '@tanstack/react-router' {
       path: '/attendance'
       fullPath: '/attendance'
       preLoaderRoute: typeof AttendanceRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/custom-programs': {
-      id: '/custom-programs'
-      path: '/custom-programs'
-      fullPath: '/custom-programs'
-      preLoaderRoute: typeof CustomProgramsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/exams': {
@@ -381,7 +361,6 @@ const rootRouteChildren: RootRouteChildren = {
   AiChatRoute: AiChatRoute,
   AssignmentsRoute: AssignmentsRoute,
   AttendanceRoute: AttendanceRoute,
-  CustomProgramsRoute: CustomProgramsRoute,
   ExamsRoute: ExamsRoute,
   ExpensesRoute: ExpensesRoute,
   HealthRoute: HealthRoute,
