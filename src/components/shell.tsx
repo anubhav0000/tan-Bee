@@ -1,6 +1,7 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import { useState } from "react";
 import { useLocalStorage } from "@/lib/store";
+import { SEED_SUNSET_CODES } from "@/lib/sunset-data";
 import {
   LayoutDashboard,
   BookOpen,
@@ -20,10 +21,14 @@ import {
   Sparkles,
   Settings,
   Activity,
+  FolderOpen,
+  Folder,
+  Sunset,
 } from "lucide-react";
 
 const NAV = [
   { title: "Dashboard", url: "/", icon: LayoutDashboard, dot: "bg-mint" },
+  { title: "Programs", url: "/programs", icon: Folder, dot: "bg-amber/60" },
   { title: "Subjects", url: "/subjects", icon: BookOpen, dot: "bg-ice/30" },
   { title: "Assignments", url: "/assignments", icon: ClipboardList, dot: "bg-coral/60" },
   { title: "Class Timetable", url: "/timetable", icon: CalendarDays, dot: "bg-sky/60" },
@@ -39,6 +44,7 @@ const NAV = [
   { title: "QR Generator", url: "/qr", icon: QrCode, dot: "bg-coral/50" },
   { title: "Settings", url: "/settings", icon: Settings, dot: "bg-ice/50" },
   { title: "About", url: "/about", icon: Info, dot: "bg-mint/80" },
+  { title: "Admin (Upload)", url: "/admin", icon: FolderOpen, dot: "bg-coral/80" },
 ] as const;
 
 function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
@@ -46,6 +52,7 @@ function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
   const [tutorialMode, setTutorialMode] = useLocalStorage<boolean>("sh_tutorial_mode", false);
   const [studyMode] = useLocalStorage<boolean>("sh_study_mode", true);
   const [healthMode] = useLocalStorage<boolean>("sh_health_mode", false);
+  const [sunsetEnabled] = useLocalStorage<boolean>("sh_sunset_enabled", false);
 
   return (
     <>
@@ -62,7 +69,7 @@ function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
         {NAV.map((item) => {
           if ((item as any).requiresStudyMode && !studyMode) return null;
           if ((item as any).requiresHealthMode && !healthMode) return null;
-          
+
           const active = pathname === item.url;
           return (
             <Link
@@ -81,10 +88,25 @@ function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
             </Link>
           );
         })}
+        {(sunsetEnabled || SEED_SUNSET_CODES.length > 0) && (
+          <Link
+            to="/sunset"
+            onClick={onNavigate}
+            className={
+              pathname === "/sunset"
+                ? "flex items-center gap-3 px-3 py-2.5 rounded-lg bg-amber/10 text-amber border-l-2 border-amber"
+                : "flex items-center gap-3 px-3 py-2.5 rounded-lg text-ice/55 hover:bg-white/5 transition-colors border-l-2 border-transparent"
+            }
+          >
+            <span className="size-1.5 rounded-full bg-amber" />
+            <Sunset className="size-3.5" />
+            Sunset
+          </Link>
+        )}
       </nav>
       <div className="mt-auto p-4 border-t border-white/10 flex flex-col gap-3">
         {tutorialMode && (
-          <button 
+          <button
             onClick={() => setTutorialMode(false)}
             className="w-full text-xs font-semibold py-2 px-3 rounded bg-mint/10 text-mint hover:bg-mint/20 transition-colors border border-mint/20 flex items-center justify-center gap-1.5"
           >

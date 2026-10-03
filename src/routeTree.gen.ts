@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AboutRouteImport } from './routes/about'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AiChatRouteImport } from './routes/ai-chat'
 import { Route as AssignmentsRouteImport } from './routes/assignments'
 import { Route as AttendanceRouteImport } from './routes/attendance'
@@ -19,11 +20,13 @@ import { Route as ExpensesRouteImport } from './routes/expenses'
 import { Route as HealthRouteImport } from './routes/health'
 import { Route as HolidaysRouteImport } from './routes/holidays'
 import { Route as NotesRouteImport } from './routes/notes'
+import { Route as ProgramsRouteImport } from './routes/programs'
 import { Route as ProjectsRouteImport } from './routes/projects'
 import { Route as QrRouteImport } from './routes/qr'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as StopwatchRouteImport } from './routes/stopwatch'
 import { Route as SubjectsRouteImport } from './routes/subjects'
+import { Route as SunsetRouteImport } from './routes/sunset'
 import { Route as TimetableRouteImport } from './routes/timetable'
 
 const IndexRoute = IndexRouteImport.update({
@@ -34,6 +37,11 @@ const IndexRoute = IndexRouteImport.update({
 const AboutRoute = AboutRouteImport.update({
   id: '/about',
   path: '/about',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AiChatRoute = AiChatRouteImport.update({
@@ -76,6 +84,11 @@ const NotesRoute = NotesRouteImport.update({
   path: '/notes',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ProgramsRoute = ProgramsRouteImport.update({
+  id: '/programs',
+  path: '/programs',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ProjectsRoute = ProjectsRouteImport.update({
   id: '/projects',
   path: '/projects',
@@ -101,6 +114,11 @@ const SubjectsRoute = SubjectsRouteImport.update({
   path: '/subjects',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SunsetRoute = SunsetRouteImport.update({
+  id: '/sunset',
+  path: '/sunset',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TimetableRoute = TimetableRouteImport.update({
   id: '/timetable',
   path: '/timetable',
@@ -110,6 +128,7 @@ const TimetableRoute = TimetableRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/admin': typeof AdminRoute
   '/ai-chat': typeof AiChatRoute
   '/assignments': typeof AssignmentsRoute
   '/attendance': typeof AttendanceRoute
@@ -118,16 +137,19 @@ export interface FileRoutesByFullPath {
   '/health': typeof HealthRoute
   '/holidays': typeof HolidaysRoute
   '/notes': typeof NotesRoute
+  '/programs': typeof ProgramsRoute
   '/projects': typeof ProjectsRoute
   '/qr': typeof QrRoute
   '/settings': typeof SettingsRoute
   '/stopwatch': typeof StopwatchRoute
   '/subjects': typeof SubjectsRoute
+  '/sunset': typeof SunsetRoute
   '/timetable': typeof TimetableRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/admin': typeof AdminRoute
   '/ai-chat': typeof AiChatRoute
   '/assignments': typeof AssignmentsRoute
   '/attendance': typeof AttendanceRoute
@@ -136,17 +158,20 @@ export interface FileRoutesByTo {
   '/health': typeof HealthRoute
   '/holidays': typeof HolidaysRoute
   '/notes': typeof NotesRoute
+  '/programs': typeof ProgramsRoute
   '/projects': typeof ProjectsRoute
   '/qr': typeof QrRoute
   '/settings': typeof SettingsRoute
   '/stopwatch': typeof StopwatchRoute
   '/subjects': typeof SubjectsRoute
+  '/sunset': typeof SunsetRoute
   '/timetable': typeof TimetableRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/admin': typeof AdminRoute
   '/ai-chat': typeof AiChatRoute
   '/assignments': typeof AssignmentsRoute
   '/attendance': typeof AttendanceRoute
@@ -155,11 +180,13 @@ export interface FileRoutesById {
   '/health': typeof HealthRoute
   '/holidays': typeof HolidaysRoute
   '/notes': typeof NotesRoute
+  '/programs': typeof ProgramsRoute
   '/projects': typeof ProjectsRoute
   '/qr': typeof QrRoute
   '/settings': typeof SettingsRoute
   '/stopwatch': typeof StopwatchRoute
   '/subjects': typeof SubjectsRoute
+  '/sunset': typeof SunsetRoute
   '/timetable': typeof TimetableRoute
 }
 export interface FileRouteTypes {
@@ -167,6 +194,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/about'
+    | '/admin'
     | '/ai-chat'
     | '/assignments'
     | '/attendance'
@@ -175,16 +203,19 @@ export interface FileRouteTypes {
     | '/health'
     | '/holidays'
     | '/notes'
+    | '/programs'
     | '/projects'
     | '/qr'
     | '/settings'
     | '/stopwatch'
     | '/subjects'
+    | '/sunset'
     | '/timetable'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/about'
+    | '/admin'
     | '/ai-chat'
     | '/assignments'
     | '/attendance'
@@ -193,16 +224,19 @@ export interface FileRouteTypes {
     | '/health'
     | '/holidays'
     | '/notes'
+    | '/programs'
     | '/projects'
     | '/qr'
     | '/settings'
     | '/stopwatch'
     | '/subjects'
+    | '/sunset'
     | '/timetable'
   id:
     | '__root__'
     | '/'
     | '/about'
+    | '/admin'
     | '/ai-chat'
     | '/assignments'
     | '/attendance'
@@ -211,17 +245,20 @@ export interface FileRouteTypes {
     | '/health'
     | '/holidays'
     | '/notes'
+    | '/programs'
     | '/projects'
     | '/qr'
     | '/settings'
     | '/stopwatch'
     | '/subjects'
+    | '/sunset'
     | '/timetable'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
+  AdminRoute: typeof AdminRoute
   AiChatRoute: typeof AiChatRoute
   AssignmentsRoute: typeof AssignmentsRoute
   AttendanceRoute: typeof AttendanceRoute
@@ -230,11 +267,13 @@ export interface RootRouteChildren {
   HealthRoute: typeof HealthRoute
   HolidaysRoute: typeof HolidaysRoute
   NotesRoute: typeof NotesRoute
+  ProgramsRoute: typeof ProgramsRoute
   ProjectsRoute: typeof ProjectsRoute
   QrRoute: typeof QrRoute
   SettingsRoute: typeof SettingsRoute
   StopwatchRoute: typeof StopwatchRoute
   SubjectsRoute: typeof SubjectsRoute
+  SunsetRoute: typeof SunsetRoute
   TimetableRoute: typeof TimetableRoute
 }
 
@@ -252,6 +291,13 @@ declare module '@tanstack/react-router' {
       path: '/about'
       fullPath: '/about'
       preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/ai-chat': {
@@ -310,6 +356,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof NotesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/programs': {
+      id: '/programs'
+      path: '/programs'
+      fullPath: '/programs'
+      preLoaderRoute: typeof ProgramsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/projects': {
       id: '/projects'
       path: '/projects'
@@ -345,6 +398,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SubjectsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/sunset': {
+      id: '/sunset'
+      path: '/sunset'
+      fullPath: '/sunset'
+      preLoaderRoute: typeof SunsetRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/timetable': {
       id: '/timetable'
       path: '/timetable'
@@ -358,6 +418,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
+  AdminRoute: AdminRoute,
   AiChatRoute: AiChatRoute,
   AssignmentsRoute: AssignmentsRoute,
   AttendanceRoute: AttendanceRoute,
@@ -366,11 +427,13 @@ const rootRouteChildren: RootRouteChildren = {
   HealthRoute: HealthRoute,
   HolidaysRoute: HolidaysRoute,
   NotesRoute: NotesRoute,
+  ProgramsRoute: ProgramsRoute,
   ProjectsRoute: ProjectsRoute,
   QrRoute: QrRoute,
   SettingsRoute: SettingsRoute,
   StopwatchRoute: StopwatchRoute,
   SubjectsRoute: SubjectsRoute,
+  SunsetRoute: SunsetRoute,
   TimetableRoute: TimetableRoute,
 }
 export const routeTree = rootRouteImport
