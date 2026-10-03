@@ -65,7 +65,7 @@ function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
           <p className="font-mono text-[9px] text-ice/40 mt-1 tracking-[0.2em]">SESS 2026 · LOCAL</p>
         </div>
       </div>
-      <nav className="px-3 space-y-0.5 text-[13px] font-medium flex-1 overflow-y-auto">
+      <nav className="px-3 space-y-0.5 text-[13px] font-medium flex-1 overflow-y-auto min-h-0">
         {NAV.map((item) => {
           if ((item as any).requiresStudyMode && !studyMode) return null;
           if ((item as any).requiresHealthMode && !healthMode) return null;
