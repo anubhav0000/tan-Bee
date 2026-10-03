@@ -11,7 +11,6 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AboutRouteImport } from './routes/about'
-import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AiChatRouteImport } from './routes/ai-chat'
 import { Route as AssignmentsRouteImport } from './routes/assignments'
 import { Route as AttendanceRouteImport } from './routes/attendance'
@@ -26,7 +25,6 @@ import { Route as QrRouteImport } from './routes/qr'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as StopwatchRouteImport } from './routes/stopwatch'
 import { Route as SubjectsRouteImport } from './routes/subjects'
-import { Route as SunsetRouteImport } from './routes/sunset'
 import { Route as TimetableRouteImport } from './routes/timetable'
 
 const IndexRoute = IndexRouteImport.update({
@@ -37,11 +35,6 @@ const IndexRoute = IndexRouteImport.update({
 const AboutRoute = AboutRouteImport.update({
   id: '/about',
   path: '/about',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AdminRoute = AdminRouteImport.update({
-  id: '/admin',
-  path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AiChatRoute = AiChatRouteImport.update({
@@ -114,11 +107,6 @@ const SubjectsRoute = SubjectsRouteImport.update({
   path: '/subjects',
   getParentRoute: () => rootRouteImport,
 } as any)
-const SunsetRoute = SunsetRouteImport.update({
-  id: '/sunset',
-  path: '/sunset',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const TimetableRoute = TimetableRouteImport.update({
   id: '/timetable',
   path: '/timetable',
@@ -128,7 +116,6 @@ const TimetableRoute = TimetableRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/admin': typeof AdminRoute
   '/ai-chat': typeof AiChatRoute
   '/assignments': typeof AssignmentsRoute
   '/attendance': typeof AttendanceRoute
@@ -143,13 +130,11 @@ export interface FileRoutesByFullPath {
   '/settings': typeof SettingsRoute
   '/stopwatch': typeof StopwatchRoute
   '/subjects': typeof SubjectsRoute
-  '/sunset': typeof SunsetRoute
   '/timetable': typeof TimetableRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/admin': typeof AdminRoute
   '/ai-chat': typeof AiChatRoute
   '/assignments': typeof AssignmentsRoute
   '/attendance': typeof AttendanceRoute
@@ -164,14 +149,12 @@ export interface FileRoutesByTo {
   '/settings': typeof SettingsRoute
   '/stopwatch': typeof StopwatchRoute
   '/subjects': typeof SubjectsRoute
-  '/sunset': typeof SunsetRoute
   '/timetable': typeof TimetableRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/admin': typeof AdminRoute
   '/ai-chat': typeof AiChatRoute
   '/assignments': typeof AssignmentsRoute
   '/attendance': typeof AttendanceRoute
@@ -186,7 +169,6 @@ export interface FileRoutesById {
   '/settings': typeof SettingsRoute
   '/stopwatch': typeof StopwatchRoute
   '/subjects': typeof SubjectsRoute
-  '/sunset': typeof SunsetRoute
   '/timetable': typeof TimetableRoute
 }
 export interface FileRouteTypes {
@@ -194,7 +176,6 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/about'
-    | '/admin'
     | '/ai-chat'
     | '/assignments'
     | '/attendance'
@@ -209,13 +190,11 @@ export interface FileRouteTypes {
     | '/settings'
     | '/stopwatch'
     | '/subjects'
-    | '/sunset'
     | '/timetable'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/about'
-    | '/admin'
     | '/ai-chat'
     | '/assignments'
     | '/attendance'
@@ -230,13 +209,11 @@ export interface FileRouteTypes {
     | '/settings'
     | '/stopwatch'
     | '/subjects'
-    | '/sunset'
     | '/timetable'
   id:
     | '__root__'
     | '/'
     | '/about'
-    | '/admin'
     | '/ai-chat'
     | '/assignments'
     | '/attendance'
@@ -251,14 +228,12 @@ export interface FileRouteTypes {
     | '/settings'
     | '/stopwatch'
     | '/subjects'
-    | '/sunset'
     | '/timetable'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
-  AdminRoute: typeof AdminRoute
   AiChatRoute: typeof AiChatRoute
   AssignmentsRoute: typeof AssignmentsRoute
   AttendanceRoute: typeof AttendanceRoute
@@ -273,7 +248,6 @@ export interface RootRouteChildren {
   SettingsRoute: typeof SettingsRoute
   StopwatchRoute: typeof StopwatchRoute
   SubjectsRoute: typeof SubjectsRoute
-  SunsetRoute: typeof SunsetRoute
   TimetableRoute: typeof TimetableRoute
 }
 
@@ -291,13 +265,6 @@ declare module '@tanstack/react-router' {
       path: '/about'
       fullPath: '/about'
       preLoaderRoute: typeof AboutRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/admin': {
-      id: '/admin'
-      path: '/admin'
-      fullPath: '/admin'
-      preLoaderRoute: typeof AdminRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/ai-chat': {
@@ -398,13 +365,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SubjectsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/sunset': {
-      id: '/sunset'
-      path: '/sunset'
-      fullPath: '/sunset'
-      preLoaderRoute: typeof SunsetRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/timetable': {
       id: '/timetable'
       path: '/timetable'
@@ -418,7 +378,6 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
-  AdminRoute: AdminRoute,
   AiChatRoute: AiChatRoute,
   AssignmentsRoute: AssignmentsRoute,
   AttendanceRoute: AttendanceRoute,
@@ -433,7 +392,6 @@ const rootRouteChildren: RootRouteChildren = {
   SettingsRoute: SettingsRoute,
   StopwatchRoute: StopwatchRoute,
   SubjectsRoute: SubjectsRoute,
-  SunsetRoute: SunsetRoute,
   TimetableRoute: TimetableRoute,
 }
 export const routeTree = rootRouteImport
