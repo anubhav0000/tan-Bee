@@ -1,5 +1,5 @@
 import client, { databases, storage, appwriteId } from '../lib/appwrite';
-import { Query } from 'appwrite';
+import { Query, Permission, Role } from 'appwrite';
 
 const DB_ID = import.meta.env.VITE_APPWRITE_DATABASE_ID;
 const COL_ID = import.meta.env.VITE_APPWRITE_COLLECTION_ID;
@@ -30,7 +30,12 @@ export const fileService = {
                     fileType: file.type || 'unknown',
                     fileSize: file.size,
                     uploadedBy: userId,
-                }
+                },
+                [
+                    Permission.read(Role.any()),
+                    Permission.update(Role.user(userId)),
+                    Permission.delete(Role.user(userId))
+                ]
             );
             return document;
         } catch (error) {

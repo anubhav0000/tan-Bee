@@ -214,7 +214,7 @@ function SunsetPage() {
             </div>
           </div>
           
-          <div className="flex-1 max-w-3xl px-8 lg:px-12">
+          <div className="flex-1 max-w-3xl px-2 sm:px-8 lg:px-12">
             <div className="flex items-center bg-[#EAF1FB] rounded-full px-4 py-2.5 focus-within:bg-white focus-within:shadow-md transition-all">
               <Search className="w-5 h-5 text-gray-500 mr-3" />
               <input 
@@ -442,7 +442,7 @@ function CodeEmailRow({ sender, subject, codeContent, time, unread = false }: an
         className={`flex items-center px-2 sm:px-4 py-2 sm:py-2.5 cursor-pointer hover:shadow-sm transition-shadow ${unread ? 'bg-gray-50 font-bold text-gray-900' : 'bg-white text-gray-700'}`}
         onClick={() => setIsOpen(!isOpen)}
       >
-        <div className="flex items-center gap-2 sm:gap-3 w-32 sm:w-48 shrink-0">
+        <div className="flex items-center gap-2 sm:gap-3 w-24 sm:w-48 shrink-0">
           <input type="checkbox" className="w-4 h-4 border-gray-300 rounded text-gray-300 cursor-pointer hidden sm:block" />
           <Star className={`w-4 h-4 cursor-pointer hidden sm:block ${unread ? 'text-gray-400 hover:text-yellow-400' : 'text-gray-300 hover:text-gray-400'}`} />
           <span className="truncate text-[13px] sm:text-[14px]">{sender}</span>
@@ -457,9 +457,9 @@ function CodeEmailRow({ sender, subject, codeContent, time, unread = false }: an
       </div>
 
       {isOpen && (
-        <div className="p-6 bg-white animate-fade-in border-t border-gray-100 shadow-inner">
-          <div className="flex justify-between items-center mb-4">
-            <h3 className="text-xl font-medium text-gray-800">{subject}</h3>
+        <div className="p-4 sm:p-6 bg-white animate-fade-in border-t border-gray-100 shadow-inner">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-4">
+            <h3 className="text-lg sm:text-xl font-medium text-gray-800 break-words w-full sm:w-auto">{subject}</h3>
             <button
               onClick={handleCopy}
               className="flex items-center gap-1.5 px-4 py-2 rounded-full bg-blue-600 text-white hover:bg-blue-700 transition-colors text-sm font-medium shadow-sm"
@@ -480,7 +480,7 @@ function CodeEmailRow({ sender, subject, codeContent, time, unread = false }: an
 function DummyEmailRow({ sender, subject, snippet, time, unread = false, tag, showBackground }: any) {
   return (
     <div className={`flex items-center border-b border-gray-100 px-2 sm:px-4 py-2 sm:py-2.5 cursor-default ${unread ? 'bg-gray-50 font-bold text-gray-900' : 'bg-white text-gray-700'} ${showBackground ? 'hover:bg-gray-50 hover:shadow-sm transition-shadow' : ''}`}>
-      <div className="flex items-center gap-2 sm:gap-3 w-32 sm:w-48 shrink-0">
+      <div className="flex items-center gap-2 sm:gap-3 w-24 sm:w-48 shrink-0">
         <input type="checkbox" className="w-4 h-4 border-gray-300 rounded text-gray-300 hidden sm:block" disabled />
         <Star className={`w-4 h-4 hidden sm:block ${unread ? 'text-gray-400' : 'text-gray-300'}`} />
         <span className="truncate text-[13px] sm:text-[14px]">{sender}</span>

@@ -27,13 +27,13 @@ export const useFiles = () => {
         const unsubscribe = client.subscribe(`databases.${DB_ID}.collections.${COL_ID}.documents`, response => {
             const payload = { ...response.payload, title: response.payload.Title || response.payload.title };
             
-            if (response.events.includes('databases.*.collections.*.documents.*.create')) {
+            if (response.events.some(e => e.includes('.create'))) {
                 setFiles(prev => [payload, ...prev]);
             }
-            if (response.events.includes('databases.*.collections.*.documents.*.delete')) {
+            if (response.events.some(e => e.includes('.delete'))) {
                 setFiles(prev => prev.filter(file => file.$id !== payload.$id));
             }
-            if (response.events.includes('databases.*.collections.*.documents.*.update')) {
+            if (response.events.some(e => e.includes('.update'))) {
                 setFiles(prev => prev.map(file => 
                     file.$id === payload.$id ? payload : file
                 ));
