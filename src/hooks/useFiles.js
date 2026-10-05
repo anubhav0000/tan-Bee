@@ -1,9 +1,5 @@
 import { useState, useEffect } from 'react';
 import { fileService } from '../services/fileService';
-import client from '../lib/appwrite';
-
-const DB_ID = import.meta.env.VITE_APPWRITE_DATABASE_ID;
-const COL_ID = import.meta.env.VITE_APPWRITE_COLLECTION_ID;
 
 export const useFiles = () => {
     const [files, setFiles] = useState([]);
@@ -24,23 +20,11 @@ export const useFiles = () => {
     useEffect(() => {
         fetchFiles();
 
-        const unsubscribe = client.subscribe(`databases.${DB_ID}.collections.${COL_ID}.documents`, response => {
-            const payload = { ...response.payload, title: response.payload.Title || response.payload.title };
-            
-            if (response.events.some(e => e.includes('.create'))) {
-                setFiles(prev => [payload, ...prev]);
-            }
-            if (response.events.some(e => e.includes('.delete'))) {
-                setFiles(prev => prev.filter(file => file.$id !== payload.$id));
-            }
-            if (response.events.some(e => e.includes('.update'))) {
-                setFiles(prev => prev.map(file => 
-                    file.$id === payload.$id ? payload : file
-                ));
-            }
-        });
-
-        return () => unsubscribe();
+        const handleLocalChange = () => fetchFiles();
+        if (typeof window !== 'undefined') {
+            window.addEventListener('local-files-changed', handleLocalChange);
+            return () => window.removeEventListener('local-files-changed', handleLocalChange);
+        }
     }, []);
 
     return { files, loading, refetch: fetchFiles };
