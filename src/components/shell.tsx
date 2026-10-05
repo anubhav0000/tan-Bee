@@ -25,7 +25,7 @@ import {
 
 const NAV = [
   { title: "Dashboard", url: "/", icon: LayoutDashboard, dot: "bg-mint" },
-  { title: "Programs", url: "/programs", icon: Folder, dot: "bg-amber/60" },
+  { title: "Programs", url: "/programs", icon: Folder, dot: "bg-amber/60", requiresProgramsAccess: true },
   { title: "Subjects", url: "/subjects", icon: BookOpen, dot: "bg-ice/30" },
   { title: "Assignments", url: "/assignments", icon: ClipboardList, dot: "bg-coral/60" },
   { title: "Class Timetable", url: "/timetable", icon: CalendarDays, dot: "bg-sky/60" },
@@ -48,6 +48,10 @@ function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
   const [tutorialMode, setTutorialMode] = useLocalStorage<boolean>("sh_tutorial_mode", false);
   const [studyMode] = useLocalStorage<boolean>("sh_study_mode", true);
   const [healthMode] = useLocalStorage<boolean>("sh_health_mode", false);
+  const [lifetimeAccess] = useLocalStorage<boolean>("sh_lifetime_access", false);
+  const [tempAccessExpiry] = useLocalStorage<number>("sh_temp_access_expiry", 0);
+
+  const isProgramsUnlocked = lifetimeAccess || Date.now() < tempAccessExpiry;
 
   return (
     <>
@@ -64,6 +68,7 @@ function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
         {NAV.map((item) => {
           if ((item as any).requiresStudyMode && !studyMode) return null;
           if ((item as any).requiresHealthMode && !healthMode) return null;
+          if ((item as any).requiresProgramsAccess && !isProgramsUnlocked) return null;
 
           const active = pathname === item.url;
           return (

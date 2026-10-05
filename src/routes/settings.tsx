@@ -1,253 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Settings, BookOpen, Activity, Lock, Unlock, Copy, Check } from "lucide-react";
+import { Settings, BookOpen, Activity, Lock, Unlock, Check } from "lucide-react";
 import { useState } from "react";
 import { useLocalStorage } from "@/lib/store";
-
-const C_CODES = [
-  {
-    id: 1,
-    title: "Q1",
-    code: `#include <stdio.h>
-
-int main() {
-    char str[100];
-    int i = 0, count = 0;
-
-    printf("Enter a string: ");
-    scanf("%[^\\n]", str);
-
-    while(str[i] != '\\0') {
-        if(str[i]=='a' || str[i]=='e' || str[i]=='i' || str[i]=='o' || str[i]=='u' ||
-           str[i]=='A' || str[i]=='E' || str[i]=='I' || str[i]=='O' || str[i]=='U') {
-            count++;
-        }
-        i++;
-    }
-
-    printf("Number of vowels present: %d\\n", count);
-    return 0;
-}`
-  },
-  {
-    id: 2,
-    title: "Q2",
-    code: `#include <stdio.h>
-
-int main() {
-    int arr1[10], arr2[10], sum[10], i;
-
-    printf("Enter 10 elements for first array:\\n");
-    for(i=0; i<10; i++) {
-        scanf("%d", &arr1[i]);
-    }
-
-    printf("Enter 10 elements for second array:\\n");
-    for(i=0; i<10; i++) {
-        scanf("%d", &arr2[i]);
-    }
-
-    printf("Element-wise addition output:\\n");
-    for(i=0; i<10; i++) {
-        sum[i] = arr1[i] + arr2[i];
-        printf("%d ", sum[i]);
-    }
-    printf("\\n");
-
-    return 0;
-}`
-  },
-  {
-    id: 3,
-    title: "Q3",
-    code: `#include <stdio.h>
-
-int main() {
-    char str[100];
-    int i = 0, len = 0, isPalindrome = 1;
-
-    printf("Enter a word: ");
-    scanf("%s", str);
-
-    while(str[len] != '\\0') {
-        len++;
-    }
-
-    for(i=0; i < len/2; i++) {
-        if(str[i] != str[len-i-1]) {
-            isPalindrome = 0;
-            break;
-        }
-    }
-
-    if(isPalindrome == 1) {
-        printf("The word is a palindrome.\\n");
-    } else {
-        printf("The word is not a palindrome.\\n");
-    }
-
-    return 0;
-}`
-  },
-  {
-    id: 4,
-    title: "Q4",
-    code: `#include <stdio.h>
-
-int main() {
-    char name[100];
-    int i = 0;
-
-    printf("Input:\\nEnter a name: ");
-    scanf("%[^\\n]", name);
-
-    printf("Output:\\nAbbreviated name is: %c.", name[0]);
-
-    while(name[i] != '\\0') {
-        if(name[i] == ' ' && name[i+1] != '\\0') {
-            printf("%c.", name[i+1]);
-        }
-        i++;
-    }
-    printf("\\n");
-
-    return 0;
-}`
-  },
-  {
-    id: 5,
-    title: "Q5",
-    code: `#include <stdio.h>
-
-int main() {
-    char name[100];
-    int i = 0, lastSpace = -1;
-
-    printf("Input:\\nEnter a name: ");
-    scanf("%[^\\n]", name);
-
-    while(name[i] != '\\0') {
-        if(name[i] == ' ') {
-            lastSpace = i;
-        }
-        i++;
-    }
-
-    printf("Output:\\nAbbreviated name is: ");
-    if(lastSpace != -1) {
-        printf("%c.", name[0]);
-        for(i=1; i<lastSpace; i++) {
-            if(name[i] == ' ' && name[i+1] != ' ') {
-                printf("%c.", name[i+1]);
-            }
-        }
-        for(i=lastSpace+1; name[i] != '\\0'; i++) {
-            printf("%c", name[i]);
-        }
-        printf("\\n");
-    } else {
-        printf("%s\\n", name);
-    }
-
-    return 0;
-}`
-  },
-  {
-    id: 6,
-    title: "Q6",
-    code: `#include <stdio.h>
-
-int main() {
-    int arr[10], i, num, square, found = -1;
-
-    printf("Enter 10 integer elements:\\n");
-    for(i=0; i<10; i++) {
-        scanf("%d", &arr[i]);
-    }
-
-    printf("Enter an integer to square and search: ");
-    scanf("%d", &num);
-    square = num * num;
-
-    for(i=0; i<10; i++) {
-        if(arr[i] == square) {
-            found = i;
-            break;
-        }
-    }
-
-    if(found != -1) {
-        printf("Position of the square term: %d\\n", found + 1);
-    } else {
-        printf("SQUARE TERM NOT PRESENT\\n");
-    }
-
-    return 0;
-}`
-  },
-  {
-    id: 7,
-    title: "Q7",
-    code: `#include <stdio.h>
-
-int main() {
-    int arr[10], i, searchVal, found = -1;
-
-    printf("Enter 10 integer values:\\n");
-    for(i=0; i<10; i++) {
-        scanf("%d", &arr[i]);
-    }
-
-    printf("Enter a value to search: ");
-    scanf("%d", &searchVal);
-
-    for(i=0; i<10; i++) {
-        if(arr[i] == searchVal) {
-            found = i;
-            break;
-        }
-    }
-
-    if(found != -1) {
-        printf("Array index: %d\\n", found);
-    } else {
-        printf("NOT PRESENT\\n");
-    }
-
-    return 0;
-}`
-  },
-  {
-    id: 8,
-    title: "Q8",
-    code: `#include <stdio.h>
-
-int main() {
-    int arr[10], i, key, flag = 0;
-
-    printf("Enter 10 integers for the array:\\n");
-    for(i=0; i<10; i++) {
-        scanf("%d", &arr[i]);
-    }
-
-    printf("Enter element to find using linear search: ");
-    scanf("%d", &key);
-
-    for(i=0; i<10; i++) {
-        if(arr[i] == key) {
-            printf("Element found at position %d.\\n", i + 1);
-            flag = 1;
-            break;
-        }
-    }
-
-    if(flag == 0) {
-        printf("Element not found in the array.\\n");
-    }
-
-    return 0;
-}`
-  }
-];
 
 export const Route = createFileRoute("/settings")({
   head: () => ({
@@ -259,29 +13,85 @@ export const Route = createFileRoute("/settings")({
   component: SettingsPage,
 });
 
+type AccessFlow = "NONE" | "LIFETIME_OTP" | "LIFETIME_PWD" | "TEMP_OTP";
+
 function SettingsPage() {
   const [studyMode, setStudyMode] = useLocalStorage<boolean>("sh_study_mode", true);
   const [healthMode, setHealthMode] = useLocalStorage<boolean>("sh_health_mode", false);
   
-  const [adminPassword, setAdminPassword] = useState("");
-  const [isAdminUnlocked, setIsAdminUnlocked] = useState(false);
-  const [adminError, setAdminError] = useState("");
-  const [copiedId, setCopiedId] = useState<number | null>(null);
+  const [lifetimeAccess, setLifetimeAccess] = useLocalStorage<boolean>("sh_lifetime_access", false);
+  const [tempAccessExpiry, setTempAccessExpiry] = useLocalStorage<number>("sh_temp_access_expiry", 0);
 
-  const handleAdminUnlock = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (adminPassword === "020526") {
-      setIsAdminUnlocked(true);
+  const [flow, setFlow] = useState<AccessFlow>("NONE");
+  const [generatedOtp, setGeneratedOtp] = useState("");
+  const [otpExpiry, setOtpExpiry] = useState(0);
+  const [userOtp, setUserOtp] = useState("");
+  const [adminPassword, setAdminPassword] = useState("");
+  const [adminError, setAdminError] = useState("");
+  const [isSendingOtp, setIsSendingOtp] = useState(false);
+
+  const isProgramsUnlocked = lifetimeAccess || Date.now() < tempAccessExpiry;
+
+  const sendOtpEmail = async (flowType: "LIFETIME_OTP" | "TEMP_OTP") => {
+    setIsSendingOtp(true);
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    setGeneratedOtp(otp);
+    setOtpExpiry(Date.now() + 5 * 60 * 1000); // 5 mins validity
+    
+    try {
+      await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({
+          access_key: "b0a4626e-7512-469f-bb44-c49db6082845",
+          subject: `Tanbee Unlock OTP: ${otp}`,
+          from_name: "Tanbee Admin",
+          message: `Your random OTP is: ${otp}. It is valid for 5 minutes.`,
+        }),
+      });
+      setFlow(flowType);
       setAdminError("");
-    } else {
-      setAdminError("Incorrect password");
+      setUserOtp("");
+    } catch (err) {
+      setAdminError("Failed to send OTP.");
+    } finally {
+      setIsSendingOtp(false);
     }
   };
 
-  const handleCopy = (id: number, text: string) => {
-    navigator.clipboard.writeText(text);
-    setCopiedId(id);
-    setTimeout(() => setCopiedId(null), 2000);
+  const handleOtpVerify = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (Date.now() > otpExpiry) {
+      setAdminError("OTP has expired. Please retry.");
+      return;
+    }
+    if (userOtp === generatedOtp) {
+      if (flow === "LIFETIME_OTP") {
+        setFlow("LIFETIME_PWD");
+        setAdminError("");
+        setAdminPassword("");
+      } else if (flow === "TEMP_OTP") {
+        setTempAccessExpiry(Date.now() + 15 * 60 * 1000);
+        setFlow("NONE");
+        setAdminError("");
+      }
+    } else {
+      setAdminError("Incorrect OTP.");
+    }
+  };
+
+  const handlePwdVerify = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (adminPassword === "020526") {
+      setLifetimeAccess(true);
+      setFlow("NONE");
+      setAdminError("");
+    } else {
+      setAdminError("Incorrect password.");
+    }
   };
 
   return (
@@ -335,49 +145,109 @@ function SettingsPage() {
 
       <div className="glass-card p-6 animate-rise mt-8">
         <div className="flex items-center gap-2 mb-5">
-          {isAdminUnlocked ? <Unlock className="size-4 text-mint" /> : <Lock className="size-4 text-ice/50" />}
-          <p className="section-label">ADMIN PANEL</p>
+          {isProgramsUnlocked ? <Unlock className="size-4 text-mint" /> : <Lock className="size-4 text-ice/50" />}
+          <p className="section-label">ADMIN PANEL UNLOCK</p>
         </div>
         
-        {!isAdminUnlocked ? (
-          <form onSubmit={handleAdminUnlock} className="flex flex-col gap-3">
-            <p className="text-sm text-ice/60 mb-2">Enter the admin password to unlock.</p>
-            <div className="flex gap-2">
-              <input
-                type="password"
-                value={adminPassword}
-                onChange={(e) => setAdminPassword(e.target.value)}
-                placeholder="Password"
-                className="flex-1 rounded-xl bg-white/5 border border-white/10 px-4 py-2.5 text-ice placeholder:text-ice/30 outline-none focus:border-mint/50 transition-colors"
-              />
-              <button 
-                type="submit"
-                className="rounded-xl bg-mint px-4 py-2.5 text-ink font-semibold hover:bg-mint/90 transition-colors"
-              >
-                Unlock
-              </button>
-            </div>
-            {adminError && <p className="text-rose text-sm mt-1">{adminError}</p>}
-          </form>
+        {!isProgramsUnlocked ? (
+          <div className="space-y-4">
+            <p className="text-sm text-ice/60 mb-4">Unlock the Programs section with lifetime or temporary access.</p>
+            
+            {flow === "NONE" && (
+              <div className="flex flex-col sm:flex-row gap-4">
+                <button 
+                  onClick={() => sendOtpEmail("LIFETIME_OTP")} 
+                  disabled={isSendingOtp}
+                  className="flex-1 rounded-xl bg-mint/10 text-mint border border-mint/20 px-4 py-3 font-semibold hover:bg-mint/20 transition-colors"
+                >
+                  {isSendingOtp ? "Sending..." : "Lifetime Access"}
+                </button>
+                <button 
+                  onClick={() => sendOtpEmail("TEMP_OTP")} 
+                  disabled={isSendingOtp}
+                  className="flex-1 rounded-xl bg-amber/10 text-amber-400 border border-amber/20 px-4 py-3 font-semibold hover:bg-amber/20 transition-colors"
+                >
+                  {isSendingOtp ? "Sending..." : "Temporary Access (15m)"}
+                </button>
+              </div>
+            )}
+
+            {(flow === "LIFETIME_OTP" || flow === "TEMP_OTP") && (
+              <form onSubmit={handleOtpVerify} className="flex flex-col gap-3 animate-fade-in">
+                <p className="text-sm text-ice/80">
+                  We've sent a random OTP to your registered email. Please enter it below.
+                </p>
+                <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
+                  <input
+                    type="text"
+                    value={userOtp}
+                    onChange={(e) => setUserOtp(e.target.value.replace(/\D/g, ''))}
+                    placeholder="Enter numeric OTP"
+                    className="w-full sm:flex-1 rounded-xl bg-white/5 border border-white/10 px-4 py-3 sm:py-2.5 text-ice placeholder:text-ice/30 outline-none focus:border-mint/50 transition-colors"
+                  />
+                  <div className="flex gap-2">
+                    <button 
+                      type="submit"
+                      className="flex-1 sm:flex-none rounded-xl bg-mint px-4 py-3 sm:py-2.5 text-ink font-semibold hover:bg-mint/90 transition-colors"
+                    >
+                      Verify
+                    </button>
+                    <button 
+                      type="button"
+                      onClick={() => sendOtpEmail(flow)}
+                      disabled={isSendingOtp}
+                      className="flex-1 sm:flex-none rounded-xl bg-white/5 border border-white/10 px-4 py-3 sm:py-2.5 text-ice font-semibold hover:bg-white/10 transition-colors"
+                    >
+                      Retry
+                    </button>
+                  </div>
+                </div>
+              </form>
+            )}
+
+            {flow === "LIFETIME_PWD" && (
+              <form onSubmit={handlePwdVerify} className="flex flex-col gap-3 animate-fade-in">
+                <p className="text-sm text-ice/80">Enter the second password for lifetime access.</p>
+                <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
+                  <input
+                    type="password"
+                    value={adminPassword}
+                    onChange={(e) => setAdminPassword(e.target.value)}
+                    placeholder="Password"
+                    className="w-full sm:flex-1 rounded-xl bg-white/5 border border-white/10 px-4 py-3 sm:py-2.5 text-ice placeholder:text-ice/30 outline-none focus:border-mint/50 transition-colors"
+                  />
+                  <button 
+                    type="submit"
+                    className="w-full sm:w-auto rounded-xl bg-mint px-6 py-3 sm:py-2.5 text-ink font-semibold hover:bg-mint/90 transition-colors"
+                  >
+                    Unlock
+                  </button>
+                </div>
+              </form>
+            )}
+
+            {adminError && <p className="text-rose text-sm mt-2">{adminError}</p>}
+          </div>
         ) : (
           <div className="space-y-4 animate-fade-in">
-            <p className="text-sm text-mint">Admin panel unlocked.</p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {C_CODES.map((q) => (
+            <p className="text-sm text-mint flex items-center gap-2">
+              <Check className="size-4" /> Admin panel unlocked.
+            </p>
+            {lifetimeAccess ? (
+              <p className="text-xs text-ice/60">You have lifetime access to the Programs section.</p>
+            ) : (
+              <div className="flex items-center gap-3">
+                <p className="text-xs text-ice/60">
+                  Temporary access expires at {new Date(tempAccessExpiry).toLocaleTimeString()}
+                </p>
                 <button
-                  key={q.id}
-                  onClick={() => handleCopy(q.id, q.code)}
-                  className="flex items-center justify-between p-4 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 transition-colors group"
+                  onClick={() => setTempAccessExpiry(0)}
+                  className="text-xs text-rose/80 hover:text-rose border border-rose/20 bg-rose/10 px-2 py-1 rounded"
                 >
-                  <span className="font-semibold text-ice group-hover:text-mint transition-colors">{q.title} copy button</span>
-                  {copiedId === q.id ? (
-                    <Check className="size-4 text-mint" />
-                  ) : (
-                    <Copy className="size-4 text-ice/60 group-hover:text-mint transition-colors" />
-                  )}
+                  Revoke
                 </button>
-              ))}
-            </div>
+              </div>
+            )}
           </div>
         )}
       </div>
