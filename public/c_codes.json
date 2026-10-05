@@ -1,0 +1,77 @@
+[
+  {
+    "id": 1,
+    "title": "Asg 8 Q1",
+    "code": "#include <stdio.h>\n\nint main() {\n    char str[100];\n    int i = 0, count = 0;\n\n    printf(\"Enter a string: \");\n    scanf(\"%[^\\n]\", str);\n\n    while(str[i] != '\\0') {\n        if(str[i]=='a' || str[i]=='e' || str[i]=='i' || str[i]=='o' || str[i]=='u' ||\n           str[i]=='A' || str[i]=='E' || str[i]=='I' || str[i]=='O' || str[i]=='U') {\n            count++;\n        }\n        i++;\n    }\n\n    printf(\"Number of vowels present: %d\\n\", count);\n    return 0;\n}"
+  },
+  {
+    "id": 2,
+    "title": "Asg 8 Q2",
+    "code": "#include <stdio.h>\n\nint main() {\n    int arr1[10], arr2[10], sum[10], i;\n\n    printf(\"Enter 10 elements for first array:\\n\");\n    for(i=0; i<10; i++) {\n        scanf(\"%d\", &arr1[i]);\n    }\n\n    printf(\"Enter 10 elements for second array:\\n\");\n    for(i=0; i<10; i++) {\n        scanf(\"%d\", &arr2[i]);\n    }\n\n    printf(\"Element-wise addition output:\\n\");\n    for(i=0; i<10; i++) {\n        sum[i] = arr1[i] + arr2[i];\n        printf(\"%d \", sum[i]);\n    }\n    printf(\"\\n\");\n\n    return 0;\n}"
+  },
+  {
+    "id": 3,
+    "title": "Asg 8 Q3",
+    "code": "#include <stdio.h>\n\nint main() {\n    char str[100];\n    int i = 0, len = 0, isPalindrome = 1;\n\n    printf(\"Enter a word: \");\n    scanf(\"%s\", str);\n\n    while(str[len] != '\\0') {\n        len++;\n    }\n\n    for(i=0; i < len/2; i++) {\n        if(str[i] != str[len-i-1]) {\n            isPalindrome = 0;\n            break;\n        }\n    }\n\n    if(isPalindrome == 1) {\n        printf(\"The word is a palindrome.\\n\");\n    } else {\n        printf(\"The word is not a palindrome.\\n\");\n    }\n\n    return 0;\n}"
+  },
+  {
+    "id": 4,
+    "title": "Asg 8 Q4",
+    "code": "#include <stdio.h>\n\nint main() {\n    char name[100];\n    int i = 0;\n\n    printf(\"Input:\\nEnter a name: \");\n    scanf(\"%[^\\n]\", name);\n\n    printf(\"Output:\\nAbbreviated name is: %c.\", name[0]);\n\n    while(name[i] != '\\0') {\n        if(name[i] == ' ' && name[i+1] != '\\0') {\n            printf(\"%c.\", name[i+1]);\n        }\n        i++;\n    }\n    printf(\"\\n\");\n\n    return 0;\n}"
+  },
+  {
+    "id": 5,
+    "title": "Asg 8 Q5",
+    "code": "#include <stdio.h>\n\nint main() {\n    char name[100];\n    int i = 0, lastSpace = -1;\n\n    printf(\"Input:\\nEnter a name: \");\n    scanf(\"%[^\\n]\", name);\n\n    while(name[i] != '\\0') {\n        if(name[i] == ' ') {\n            lastSpace = i;\n        }\n        i++;\n    }\n\n    printf(\"Output:\\nAbbreviated name is: \");\n    if(lastSpace != -1) {\n        printf(\"%c.\", name[0]);\n        for(i=1; i<lastSpace; i++) {\n            if(name[i] == ' ' && name[i+1] != ' ') {\n                printf(\"%c.\", name[i+1]);\n            }\n        }\n        for(i=lastSpace+1; name[i] != '\\0'; i++) {\n            printf(\"%c\", name[i]);\n        }\n        printf(\"\\n\");\n    } else {\n        printf(\"%s\\n\", name);\n    }\n\n    return 0;\n}"
+  },
+  {
+    "id": 6,
+    "title": "Asg 8 Q6",
+    "code": "#include <stdio.h>\n\nint main() {\n    int arr[10], i, num, square, found = -1;\n\n    printf(\"Enter 10 integer elements:\\n\");\n    for(i=0; i<10; i++) {\n        scanf(\"%d\", &arr[i]);\n    }\n\n    printf(\"Enter an integer to square and search: \");\n    scanf(\"%d\", &num);\n    square = num * num;\n\n    for(i=0; i<10; i++) {\n        if(arr[i] == square) {\n            found = i;\n            break;\n        }\n    }\n\n    if(found != -1) {\n        printf(\"Position of the square term: %d\\n\", found + 1);\n    } else {\n        printf(\"SQUARE TERM NOT PRESENT\\n\");\n    }\n\n    return 0;\n}"
+  },
+  {
+    "id": 7,
+    "title": "Asg 8 Q7",
+    "code": "#include <stdio.h>\n\nint main() {\n    int arr[10], i, searchVal, found = -1;\n\n    printf(\"Enter 10 integer values:\\n\");\n    for(i=0; i<10; i++) {\n        scanf(\"%d\", &arr[i]);\n    }\n\n    printf(\"Enter a value to search: \");\n    scanf(\"%d\", &searchVal);\n\n    for(i=0; i<10; i++) {\n        if(arr[i] == searchVal) {\n            found = i;\n            break;\n        }\n    }\n\n    if(found != -1) {\n        printf(\"Array index: %d\\n\", found);\n    } else {\n        printf(\"NOT PRESENT\\n\");\n    }\n\n    return 0;\n}"
+  },
+  {
+    "id": 8,
+    "title": "Asg 8 Q8",
+    "code": "#include <stdio.h>\n\nint main() {\n    int arr[10], i, key, flag = 0;\n\n    printf(\"Enter 10 integers for the array:\\n\");\n    for(i=0; i<10; i++) {\n        scanf(\"%d\", &arr[i]);\n    }\n\n    printf(\"Enter element to find using linear search: \");\n    scanf(\"%d\", &key);\n\n    for(i=0; i<10; i++) {\n        if(arr[i] == key) {\n            printf(\"Element found at position %d.\\n\", i + 1);\n            flag = 1;\n            break;\n        }\n    }\n\n    if(flag == 0) {\n        printf(\"Element not found in the array.\\n\");\n    }\n\n    return 0;\n}"
+  },
+  {
+    "id": 9,
+    "title": "Assign 9 - Q(i): Sum of 3 ints",
+    "code": "#include <stdio.h>\n\nint sum(int a, int b, int c) {\n    return a + b + c;\n}\n\nint main() {\n    int num1, num2, num3;\n    printf(\"Enter three integers: \");\n    scanf(\"%d %d %d\", &num1, &num2, &num3);\n    printf(\"The sum is: %d\\n\", sum(num1, num2, num3));\n    return 0;\n}"
+  },
+  {
+    "id": 10,
+    "title": "Assign 9 - Q(ii): Average of 5 nums",
+    "code": "#include <stdio.h>\n\nfloat calculateAverage(float n1, float n2, float n3, float n4, float n5) {\n    return (n1 + n2 + n3 + n4 + n5) / 5.0;\n}\n\nint main() {\n    float a, b, c, d, e;\n    printf(\"Enter five numbers: \");\n    scanf(\"%f %f %f %f %f\", &a, &b, &c, &d, &e);\n    printf(\"The average is: %.2f\\n\", calculateAverage(a, b, c, d, e));\n    return 0;\n}"
+  },
+  {
+    "id": 11,
+    "title": "Assign 9 - Q(iii): Area of square",
+    "code": "#include <stdio.h>\n\n// a) Function with an argument\nint areaWithArgument(int side) {\n    return side * side;\n}\n\n// b) Function without an argument\nint areaWithoutArgument() {\n    int side;\n    printf(\"Enter the side of the square for function b: \");\n    scanf(\"%d\", &side);\n    return side * side;\n}\n\nint main() {\n    int s;\n    printf(\"Enter the side of the square for function a: \");\n    scanf(\"%d\", &s);\n\n    printf(\"Area (with argument): %d\\n\", areaWithArgument(s));\n    printf(\"Area (without argument): %d\\n\", areaWithoutArgument());\n\n    return 0;\n}"
+  },
+  {
+    "id": 12,
+    "title": "Assign 9 - Q(iv): Even or odd",
+    "code": "#include <stdio.h>\n\nvoid checkEvenOdd(int num) {\n    if (num % 2 == 0) {\n        printf(\"%d is Even.\\n\", num);\n    } else {\n        printf(\"%d is Odd.\\n\", num);\n    }\n}\n\nint main() {\n    int num;\n    printf(\"Enter an integer: \");\n    scanf(\"%d\", &num);\n    checkEvenOdd(num);\n    return 0;\n}"
+  },
+  {
+    "id": 13,
+    "title": "Assign 9 - Q(v): Prime or not",
+    "code": "#include <stdio.h>\n\nvoid checkPrime(int num) {\n    int isPrime = 1;\n    if (num <= 1) {\n        isPrime = 0;\n    } else {\n        for (int i = 2; i <= num / 2; i++) {\n            if (num % i == 0) {\n                isPrime = 0;\n                break;\n            }\n        }\n    }\n\n    if (isPrime) {\n        printf(\"%d is a Prime number.\\n\", num);\n    } else {\n        printf(\"%d is not a Prime number.\\n\", num);\n    }\n}\n\nint main() {\n    int n;\n    printf(\"Enter a number: \");\n    scanf(\"%d\", &n);\n    checkPrime(n);\n    return 0;\n}"
+  },
+  {
+    "id": 14,
+    "title": "Assign 9 - Q(vi): Factorial",
+    "code": "#include <stdio.h>\n\nlong long calculateFactorial(int num) {\n    long long fact = 1;\n    for (int i = 1; i <= num; i++) {\n        fact *= i;\n    }\n    return fact;\n}\n\nint main() {\n    int num;\n    printf(\"Enter a number: \");\n    scanf(\"%d\", &num);\n    printf(\"Factorial of %d is: %lld\\n\", num, calculateFactorial(num));\n    return 0;\n}"
+  },
+  {
+    "id": 15,
+    "title": "Assign 9 - Q(vii): Swap using args",
+    "code": "#include <stdio.h>\n\nvoid swap(int *a, int *b) {\n    int temp = *a;\n    *a = *b;\n    *b = temp;\n}\n\nint main() {\n    int x, y;\n    printf(\"Enter two integers (x and y): \");\n    scanf(\"%d %d\", &x, &y);\n\n    printf(\"Before Swapping: x = %d, y = %d\\n\", x, y);\n    swap(&x, &y);\n    printf(\"After Swapping: x = %d, y = %d\\n\", x, y);\n\n    return 0;\n}"
+  }
+]

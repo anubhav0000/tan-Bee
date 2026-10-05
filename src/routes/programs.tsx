@@ -4,7 +4,7 @@ import { createPortal } from "react-dom";
 import { useFiles } from "../hooks/useFiles";
 import FileCard from "../components/FileManagement/FileCard";
 import { Search, Download, Copy, Eye, Check, X, Lock } from "lucide-react";
-import { C_CODES } from "../data/c_codes";
+
 import { useLocalStorage, useHydrated } from "@/lib/store";
 
 export const Route = createFileRoute("/programs")({
@@ -137,7 +137,16 @@ function ProgramsPage() {
     return matchesSearch && matchesCategory;
   });
 
-  const filteredCodes = C_CODES.filter((q) => 
+  const [codes, setCodes] = useState<any[]>([]);
+
+  useEffect(() => {
+    fetch('/c_codes.json')
+      .then(res => res.json())
+      .then(data => setCodes(data))
+      .catch(err => console.error("Failed to load codes", err));
+  }, []);
+
+  const filteredCodes = codes.filter((q) => 
     q.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
