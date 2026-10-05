@@ -142,6 +142,7 @@ function smartMerge(parsed: any, initial: any): any {
 /** Hydration-safe localStorage state for SPA */
 export function useLocalStorage<T>(key: string, initial: T) {
   const [value, setValue] = useState<T>(() => {
+    if (typeof window === "undefined") return initial;
     try {
       const raw = window.localStorage.getItem(key);
       if (raw) {
