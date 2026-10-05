@@ -1,10 +1,11 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { useFiles } from "../hooks/useFiles";
 import FileCard from "../components/FileManagement/FileCard";
-import { Search, Download, Copy, Eye, Check, X } from "lucide-react";
+import { Search, Download, Copy, Eye, Check, X, Lock } from "lucide-react";
 import { C_CODES } from "../data/c_codes";
+import { useLocalStorage } from "@/lib/store";
 
 export const Route = createFileRoute("/programs")({
   head: () => ({
@@ -19,6 +20,11 @@ export const Route = createFileRoute("/programs")({
 function CodeCard({ q }: { q: any }) {
   const [showCode, setShowCode] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleCopy = () => {
     navigator.clipboard.writeText(q.code);
@@ -72,7 +78,7 @@ function CodeCard({ q }: { q: any }) {
         </div>
       </div>
 
-      {showCode && createPortal(
+      {showCode && mounted && createPortal(
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-8 bg-ink/90 backdrop-blur-sm animate-fade-in">
           <div className="bg-panel rounded-xl border border-white/10 w-full max-w-4xl max-h-[90vh] flex flex-col overflow-hidden shadow-2xl">
             <div className="flex items-center justify-between p-4 border-b border-white/10 bg-white/5">
@@ -110,6 +116,10 @@ function CodeCard({ q }: { q: any }) {
 }
 
 function ProgramsPage() {
+  const [lifetimeAccess] = useLocalStorage<boolean>("sh_lifetime_access", false);
+  const [tempAccessExpiry] = useLocalStorage<number>("sh_temp_access_expiry", 0);
+  const isProgramsUnlocked = lifetimeAccess || Date.now() < tempAccessExpiry;
+
   const { files, loading } = useFiles();
   const [searchTerm, setSearchTerm] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("All");
@@ -129,6 +139,31 @@ function ProgramsPage() {
   const filteredCodes = C_CODES.filter((q) => 
     q.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  if (!isProgramsUnlocked) {
+    return (
+      <div className="max-w-7xl mx-auto">
+        <p className="font-mono text-[10px] tracking-[0.25em] text-mint mb-2">// PROGRAMS</p>
+        <h1 className="font-display text-4xl sm:text-5xl text-ice leading-[0.9] mb-7">Programs & Resources</h1>
+        
+        <div className="max-w-3xl mx-auto py-20 mt-10 text-center animate-rise bg-panel rounded-xl border border-white/10">
+          <div className="w-16 h-16 rounded-full bg-rose/10 flex items-center justify-center mx-auto mb-6 border border-rose/20">
+            <Lock className="size-8 text-rose" />
+          </div>
+          <h2 className="text-2xl font-display text-ice mb-4">Content Locked</h2>
+          <p className="text-ice/60 mb-8 max-w-md mx-auto">
+            You need admin verification to access the study programs and code snippets.
+          </p>
+          <Link 
+            to="/settings"
+            className="inline-flex items-center justify-center gap-2 bg-mint text-ink font-semibold px-6 py-3 rounded-xl hover:bg-mint/90 transition-colors"
+          >
+            Go to Settings to Unlock
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-7xl mx-auto">

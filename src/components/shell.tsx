@@ -25,7 +25,7 @@ import {
 
 const NAV = [
   { title: "Dashboard", url: "/", icon: LayoutDashboard, dot: "bg-mint" },
-  { title: "Programs", url: "/programs", icon: Folder, dot: "bg-amber/60", requiresProgramsAccess: true },
+  { title: "Programs", url: "/programs", icon: Folder, dot: "bg-amber/60" },
   { title: "Subjects", url: "/subjects", icon: BookOpen, dot: "bg-ice/30" },
   { title: "Assignments", url: "/assignments", icon: ClipboardList, dot: "bg-coral/60" },
   { title: "Class Timetable", url: "/timetable", icon: CalendarDays, dot: "bg-sky/60" },
@@ -68,7 +68,7 @@ function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
         {NAV.map((item) => {
           if ((item as any).requiresStudyMode && !studyMode) return null;
           if ((item as any).requiresHealthMode && !healthMode) return null;
-          if ((item as any).requiresProgramsAccess && !isProgramsUnlocked) return null;
+
 
           const active = pathname === item.url;
           return (
