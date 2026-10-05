@@ -5,7 +5,7 @@ import { useFiles } from "../hooks/useFiles";
 import FileCard from "../components/FileManagement/FileCard";
 import { Search, Download, Copy, Eye, Check, X, Lock } from "lucide-react";
 import { C_CODES } from "../data/c_codes";
-import { useLocalStorage } from "@/lib/store";
+import { useLocalStorage, useHydrated } from "@/lib/store";
 
 export const Route = createFileRoute("/programs")({
   head: () => ({
@@ -116,9 +116,10 @@ function CodeCard({ q }: { q: any }) {
 }
 
 function ProgramsPage() {
+  const hydrated = useHydrated();
   const [lifetimeAccess] = useLocalStorage<boolean>("sh_lifetime_access", false);
   const [tempAccessExpiry] = useLocalStorage<number>("sh_temp_access_expiry", 0);
-  const isProgramsUnlocked = lifetimeAccess || Date.now() < tempAccessExpiry;
+  const isProgramsUnlocked = hydrated ? (lifetimeAccess || Date.now() < tempAccessExpiry) : false;
 
   const { files, loading } = useFiles();
   const [searchTerm, setSearchTerm] = useState("");
