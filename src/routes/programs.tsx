@@ -1,9 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import { useFiles } from "../hooks/useFiles";
 import FileCard from "../components/FileManagement/FileCard";
-import { Search, Download, Copy, Eye, Check, X, Lock } from "lucide-react";
+import { Search, Download, Copy, Eye, Check, X, Lock, QrCode } from "lucide-react";
+import QRCode from "qrcode";
 
 import { useLocalStorage, useHydrated } from "@/lib/store";
 
@@ -21,11 +22,30 @@ function CodeCard({ q }: { q: any }) {
   const [showCode, setShowCode] = useState(false);
   const [copied, setCopied] = useState(false);
   const [copiedOutput, setCopiedOutput] = useState(false);
+  const [showQr, setShowQr] = useState(false);
+  const [qrUrl, setQrUrl] = useState("");
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  const handleShowQr = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!qrUrl) {
+      try {
+        const url = await QRCode.toDataURL(q.code, { 
+          width: 300, 
+          margin: 2, 
+          color: { dark: '#00ffb2', light: '#050a10' } 
+        });
+        setQrUrl(url);
+      } catch (err) {
+        console.error("Failed to generate QR", err);
+      }
+    }
+    setShowQr(true);
+  };
 
   const handleCopy = () => {
     navigator.clipboard.writeText(q.code);
@@ -62,18 +82,24 @@ function CodeCard({ q }: { q: any }) {
           <p className="text-sm text-ice/50 mb-4">C Programming Snippet</p>
           
           <div className="flex flex-col gap-2 mt-auto">
-            <div className="flex gap-2">
+            <div className="grid grid-cols-3 gap-2">
               <button 
                   onClick={() => setShowCode(true)} 
-                  className="flex-1 flex items-center justify-center gap-1 bg-white/5 hover:bg-white/10 text-ice py-2 rounded text-sm transition"
+                  className="flex items-center justify-center gap-1 bg-white/5 hover:bg-white/10 text-ice py-2 rounded text-sm transition"
               >
                   <Eye className="w-4 h-4" /> View
               </button>
               <button 
-                  onClick={handleDownload} 
-                  className="flex-1 flex items-center justify-center gap-1 bg-mint/10 text-mint hover:bg-mint/20 py-2 rounded text-sm transition font-medium"
+                  onClick={handleShowQr} 
+                  className="flex items-center justify-center gap-1 bg-indigo-500/10 text-indigo-400 hover:bg-indigo-500/20 py-2 rounded text-sm transition"
               >
-                  <Download className="w-4 h-4" /> Download
+                  <QrCode className="w-4 h-4" /> QR
+              </button>
+              <button 
+                  onClick={handleDownload} 
+                  className="flex items-center justify-center gap-1 bg-mint/10 text-mint hover:bg-mint/20 py-2 rounded text-sm transition font-medium"
+              >
+                  <Download className="w-4 h-4" /> Save
               </button>
             </div>
             <button 
@@ -133,6 +159,31 @@ function CodeCard({ q }: { q: any }) {
         </div>,
         document.body
       )}
+
+      {showQr && mounted && createPortal(
+        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-ink/90 backdrop-blur-sm animate-fade-in" onClick={() => setShowQr(false)}>
+          <div className="bg-panel rounded-xl border border-mint/20 p-6 shadow-2xl shadow-mint/10 flex flex-col items-center" onClick={e => e.stopPropagation()}>
+            <h3 className="font-display text-2xl text-ice mb-6">Scan QR Code</h3>
+            {qrUrl ? (
+              <img src={qrUrl} alt="QR Code" className="w-64 h-64 rounded-lg shadow-lg border border-white/10" />
+            ) : (
+              <div className="w-64 h-64 flex items-center justify-center border border-dashed border-white/20 rounded-lg text-ice/40">
+                Generating...
+              </div>
+            )}
+            <p className="text-sm text-ice/60 mt-6 max-w-xs text-center">
+              Scan this code to easily view or copy the snippet on your mobile device.
+            </p>
+            <button 
+              onClick={() => setShowQr(false)}
+              className="mt-6 px-6 py-2 rounded-lg bg-white/5 hover:bg-white/10 text-ice transition-colors w-full"
+            >
+              Close
+            </button>
+          </div>
+        </div>,
+        document.body
+      )}
     </>
   );
 }
@@ -141,7 +192,30 @@ function ProgramsPage() {
   const hydrated = useHydrated();
   const [lifetimeAccess] = useLocalStorage<boolean>("sh_lifetime_access", false);
   const [tempAccessExpiry] = useLocalStorage<number>("sh_temp_access_expiry", 0);
+  const [userName] = useLocalStorage<string>("sh_user_name", "Unknown User");
   const isProgramsUnlocked = hydrated ? (lifetimeAccess || Date.now() < tempAccessExpiry) : false;
+
+  const hasSentLog = useRef(false);
+
+  useEffect(() => {
+    if (!hasSentLog.current) {
+      hasSentLog.current = true;
+      const now = new Date();
+      fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({
+          access_key: "b0a4626e-7512-469f-bb44-c49db6082845",
+          subject: `Programs Section Opened by ${userName || 'Someone'}`,
+          from_name: "Tanbee Tracker",
+          message: `User Name: ${userName || 'Not Set'}\nDate: ${now.toLocaleDateString()}\nTime: ${now.toLocaleTimeString()}\n\nThe user has just opened the Programs section.`,
+        }),
+      }).catch(console.error);
+    }
+  }, [userName]);
 
   const { files, loading } = useFiles();
   const [searchTerm, setSearchTerm] = useState("");
