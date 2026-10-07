@@ -236,18 +236,21 @@ function SettingsPage() {
             {lifetimeAccess ? (
               <p className="text-xs text-ice/60">You have lifetime access to the Programs section.</p>
             ) : (
-              <div className="flex items-center gap-3">
-                <p className="text-xs text-ice/60">
-                  Temporary access expires at {new Date(tempAccessExpiry).toLocaleTimeString()}
-                </p>
-                <button
-                  onClick={() => setTempAccessExpiry(0)}
-                  className="text-xs text-rose/80 hover:text-rose border border-rose/20 bg-rose/10 px-2 py-1 rounded"
-                >
-                  Revoke
-                </button>
-              </div>
+              <p className="text-xs text-ice/60">
+                Temporary access expires at {new Date(tempAccessExpiry).toLocaleTimeString()}
+              </p>
             )}
+            <button
+              onClick={() => {
+                if (window.confirm("Are you sure you want to revoke your access? You will need to unlock it again later.")) {
+                  setLifetimeAccess(false);
+                  setTempAccessExpiry(0);
+                }
+              }}
+              className="text-xs text-rose/90 hover:text-white hover:bg-rose/90 border border-rose/20 bg-rose/10 px-3 py-1.5 rounded transition-colors"
+            >
+              Revoke Access
+            </button>
           </div>
         )}
       </div>

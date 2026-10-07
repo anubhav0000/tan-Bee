@@ -1,0 +1,8 @@
+Enter starting value: 1
+Enter ending value: 10
+
+1. Even numbers
+2. Odd numbers
+Enter your choice: 1
+
+Result: 2 4 6 8 10

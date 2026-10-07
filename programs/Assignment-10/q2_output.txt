@@ -1,0 +1,2 @@
+Enter a number: 12345
+Number of digits = 5

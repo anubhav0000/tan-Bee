@@ -20,6 +20,7 @@ export const Route = createFileRoute("/programs")({
 function CodeCard({ q }: { q: any }) {
   const [showCode, setShowCode] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [copiedOutput, setCopiedOutput] = useState(false);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -30,6 +31,13 @@ function CodeCard({ q }: { q: any }) {
     navigator.clipboard.writeText(q.code);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
+  };
+
+  const handleCopyOutput = () => {
+    if (!q.output) return;
+    navigator.clipboard.writeText(q.output);
+    setCopiedOutput(true);
+    setTimeout(() => setCopiedOutput(false), 2000);
   };
 
   const handleDownload = () => {
@@ -90,8 +98,22 @@ function CodeCard({ q }: { q: any }) {
                 <X className="w-5 h-5" />
               </button>
             </div>
-            <div className="p-6 overflow-y-auto bg-ink/50 flex-grow">
-              <pre className="text-sm text-ice/80 font-mono whitespace-pre-wrap"><code>{q.code}</code></pre>
+            <div className="p-6 overflow-y-auto bg-ink/50 flex-grow flex flex-col gap-6">
+              <div>
+                <h4 className="text-sm font-semibold text-ice mb-2">Code</h4>
+                <pre className="text-sm text-ice/80 font-mono whitespace-pre-wrap"><code>{q.code}</code></pre>
+              </div>
+              {q.output && (
+                <div>
+                  <div className="flex items-center justify-between mb-2">
+                    <h4 className="text-sm font-semibold text-mint">Output</h4>
+                    <button onClick={handleCopyOutput} className="text-xs flex items-center gap-1 text-mint hover:text-mint/80 bg-mint/10 px-2 py-1 rounded">
+                      {copiedOutput ? <><Check className="w-3 h-3" /> Copied</> : <><Copy className="w-3 h-3" /> Copy Output</>}
+                    </button>
+                  </div>
+                  <pre className="text-sm text-mint/80 font-mono whitespace-pre-wrap bg-black/20 p-4 rounded border border-white/5"><code>{q.output}</code></pre>
+                </div>
+              )}
             </div>
             <div className="p-4 border-t border-white/10 bg-white/5 flex flex-col-reverse sm:flex-row justify-end gap-3">
               <button 

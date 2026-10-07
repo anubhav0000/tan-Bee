@@ -1,0 +1,12 @@
+Simple Calculator
+-----------------
+Enter first number: 20
+Enter second number: 5
+
+1. Addition
+2. Subtraction
+3. Multiplication
+4. Division
+
+Enter your choice: 4
+Division = 4.00

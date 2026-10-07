@@ -1,0 +1,11 @@
+Simple Calculator
+-----------------
+1. Addition
+2. Subtraction
+3. Multiplication
+4. Division
+
+Enter your choice: 1
+
+Enter two numbers: 15.5 4.5
+Addition = 20.00
